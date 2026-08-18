@@ -223,9 +223,6 @@ st.sidebar.markdown(f'''
     </div>
 ''', unsafe_allow_html=True)
 
-# ชื่อผู้พัฒนา
-st.sidebar.markdown('<div class="developer-name">นาย ภูวฤทธิ์ แซ่มั่นคง</div>', unsafe_allow_html=True)
-
 # ข้อมูลผู้พัฒนา
 st.sidebar.markdown('''
     <div class="developer-info">
