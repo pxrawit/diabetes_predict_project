@@ -145,23 +145,95 @@ with st.spinner("🔄 กำลังเตรียมข้อมูลแล�
     df_raw = load_data()
 
 # ==================== Sidebar Navigation & Developer Profile ====================
+st.sidebar.markdown("""
+<style>
+    /* กล่องข้อมูลผู้พัฒนา */
+    .developer-box {
+        background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+        border-radius: 15px;
+        padding: 20px 15px;
+        border: 2px solid #3B82F6;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        margin-bottom: 10px;
+    }
+    
+    /* กรอบรูปโปรไฟล์ - วงกลม */
+    .profile-image-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .profile-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #3B82F6;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+    
+    /* ชื่อผู้พัฒนา */
+    .developer-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1E3A8A;
+        margin-bottom: 10px;
+    }
+    
+    /* ข้อมูลผู้พัฒนา */
+    .developer-info {
+        background-color: white;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 8px;
+        border-left: 4px solid #3B82F6;
+        text-align: left;
+    }
+    
+    .developer-info p {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        color: #374151;
+    }
+    
+    .developer-info strong {
+        color: #1E3A8A;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 st.sidebar.markdown("### 🩺 Diabetes Prediction AI")
 st.sidebar.markdown("---")
 
 # ส่วนข้อมูลผู้พัฒนา
 st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
 
-# 1. รูปโปรไฟล์ (เปลี่ยน 'profile.jpg' เป็นชื่อไฟล์รูปของคุณ หรือใช้ลิงก์ URL แทน)
-# หากรูปยังไม่มี ให้ใช้รูปตัวอย่างนี้ไปก่อน:
+# รูปโปรไฟล์ (วงกลม พร้อมกรอบ)
+# วิธีที่ 1: ใช้รูปจาก GitHub (แนะนำ) - วางไฟล์ profile.jpg ในโฟลเดอร์โปรเจกต์
 profile_image = "profile.jpg"
-# profile_image = "profile.jpg" # <-- ปลดคอมเมนต์บรรทัดนี้และลบบรรทัดบนออก เมื่อมีไฟล์รูปในโฟลเดอร์
 
-st.sidebar.image(profile_image, width=90)
+# วิธีที่ 2: ถ้ายังไม่มีรูป ให้ใช้รูปตัวอย่างนี้ก่อน (comment บรรทัดบน แล้ว uncomment บรรทัดล่าง)
+# profile_image = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
 
-# 2. ข้อมูลผู้พัฒนา (แก้ไขข้อมูลในวงเล็บ [] เป็นข้อมูลจริงของคุณ)
-st.sidebar.markdown("**👤 ชื่อ-สกุล:** [นาย ภูวฤทธิ์ แช่มมั่นคง]")
-st.sidebar.markdown("**🆔 รหัสนักศึกษา:** [664245031]")
-st.sidebar.markdown("**🏫 หมู่เรียน:** [66/44]")
+st.sidebar.markdown(f'''
+    <div class="profile-image-container">
+        <img src="{profile_image}" class="profile-image" alt="Profile">
+    </div>
+''', unsafe_allow_html=True)
+
+# ชื่อผู้พัฒนา
+st.sidebar.markdown('<div class="developer-name">นาย ภูวฤทธิ์ แซ่มั่นคง</div>', unsafe_allow_html=True)
+
+# ข้อมูลผู้พัฒนา
+st.sidebar.markdown('''
+    <div class="developer-info">
+        <p>👤 <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
+        <p>🆔 <strong>รหัสนักศึกษา:</strong> 664245031</p>
+        <p>🏫 <strong>หมู่เรียน:</strong> 66/44</p>
+    </div>
+''', unsafe_allow_html=True)
 
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
