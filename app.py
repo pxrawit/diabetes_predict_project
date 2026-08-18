@@ -75,6 +75,15 @@ st.markdown("""
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
     }
+    
+    /* กล่องข้อมูลผู้พัฒนา */
+    .developer-box {
+        background-color: #F8FAFC;
+        border-radius: 10px;
+        padding: 15px;
+        border: 1px solid #E2E8F0;
+        text-align: center;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -135,13 +144,38 @@ with st.spinner("🔄 กำลังเตรียมข้อมูลแล�
     metrics = build_model()
     df_raw = load_data()
 
-# ==================== Sidebar Navigation ====================
+# ==================== Sidebar Navigation & Developer Profile ====================
 st.sidebar.markdown("### 🩺 Diabetes Prediction AI")
 st.sidebar.markdown("---")
+
+# ส่วนข้อมูลผู้พัฒนา
+st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
+
+# 1. รูปโปรไฟล์ (เปลี่ยน 'profile.jpg' เป็นชื่อไฟล์รูปของคุณ หรือใช้ลิงก์ URL แทน)
+# หากรูปยังไม่มี ให้ใช้รูปตัวอย่างนี้ไปก่อน:
+profile_image = "profile.jpg"
+# profile_image = "profile.jpg" # <-- ปลดคอมเมนต์บรรทัดนี้และลบบรรทัดบนออก เมื่อมีไฟล์รูปในโฟลเดอร์
+
+st.sidebar.image(profile_image, width=90)
+
+# 2. ข้อมูลผู้พัฒนา (แก้ไขข้อมูลในวงเล็บ [] เป็นข้อมูลจริงของคุณ)
+st.sidebar.markdown("**👤 ชื่อ-สกุล:** [นาย ภูวฤทธิ์ แช่มมั่นคง]")
+st.sidebar.markdown("**🆔 รหัสนักศึกษา:** [664245031]")
+st.sidebar.markdown("**🏫 หมู่เรียน:** [66/44]")
+
+st.sidebar.markdown('</div>', unsafe_allow_html=True)
+
+st.sidebar.markdown("---")
+
+# เมนูนำทาง
 page = st.sidebar.radio(
     "เลือกเมนู",
     ["🏠 หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", "🎮 ทายผลความเสี่ยง"]
 )
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("###### 📅 ปีการศึกษา 2026")
+st.sidebar.markdown("###### 🏥 Machine Learning Project")
 
 # ==================== PAGE 1: หน้าหลัก ====================
 if page == "🏠 หน้าหลัก":
@@ -314,8 +348,3 @@ elif page == "🎮 ทายผลความเสี่ยง":
             ax_imp.set_xlabel('Score')
             ax_imp.set_ylabel('')
             st.pyplot(fig_imp)
-
-# ==================== Footer ====================
-st.sidebar.markdown("---")
-st.sidebar.markdown("###### พัฒนาโดย: [ภูวฤทธิ์ แช่มมั่นคง]")
-st.sidebar.markdown("###### 664245031 66/44")
