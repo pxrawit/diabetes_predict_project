@@ -148,8 +148,8 @@ with st.spinner("🔄 กำลังเตรียมข้อมูลแล�
 st.sidebar.markdown("### 🩺 Diabetes Prediction AI")
 st.sidebar.markdown("---")
 
-# ส่วนข้อมูลผู้พัฒนา
-st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
+# # ส่วนข้อมูลผู้พัฒนา
+# st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
 
 # 1. รูปโปรไฟล์ (เปลี่ยน 'profile.jpg' เป็นชื่อไฟล์รูปของคุณ หรือใช้ลิงก์ URL แทน)
 # หากรูปยังไม่มี ให้ใช้รูปตัวอย่างนี้ไปก่อน:
