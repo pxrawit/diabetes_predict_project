@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
-    classification_report, confusion_matrix, roc_curve, auc
+    classification_report, confusion_matrix
 )
 import warnings
 warnings.filterwarnings('ignore')
@@ -16,7 +16,7 @@ warnings.filterwarnings('ignore')
 # ตั้งค่าหน้าเว็บ
 st.set_page_config(
     page_title="Diabetes Prediction System",
-    page_icon="🏥",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -43,16 +43,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==================== โหลดและเตรียมข้อมูล ====================
-@st.cache_data
-def load_and_prepare_data():
-    """โหลดข้อมูลและ preprocessing (cache ไว้)"""
+# ==================== LOAD DATA & TRAIN MODEL ====================
+@st.cache_resource
+def load_and_train():
+    """โหลด CSV และเทรนโมเดลเอง (แก้ปัญหาไม่มีไฟล์ .pkl)"""
     df = pd.read_csv('diabetes_prediction_dataset.csv')
     
     # Encode categorical
     le_gender = LabelEncoder()
     le_smoking = LabelEncoder()
-    
     df['gender'] = le_gender.fit_transform(df['gender'])
     df['smoking_history'] = le_smoking.fit_transform(df['smoking_history'])
     
@@ -67,32 +66,28 @@ def load_and_prepare_data():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    return df, X_train_scaled, X_test_scaled, y_train, y_test, scaler, le_gender, le_smoking
-
-# ==================== เทรนโมเดล ====================
-@st.cache_resource
-def train_model(X_train, y_train):
-    """เทรน Random Forest (cache ไว้)"""
+    # Train Random Forest
     model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=15,
-        min_samples_split=5,
-        min_samples_leaf=2,
-        max_features='sqrt',
-        class_weight='balanced',
+        n_estimators=100,
+        max_depth=10,
         random_state=42,
-        n_jobs=-1
+        n_jobs=-1,
+        class_weight='balanced'
     )
-    model.fit(X_train, y_train)
-    return model
+    model.fit(X_train_scaled, y_train)
+    
+    # Evaluate
+    y_pred = model.predict(X_test_scaled)
+    metrics = {
+        'accuracy': accuracy_score(y_test, y_pred),
+        'precision': precision_score(y_test, y_pred),
+        'recall': recall_score(y_test, y_pred),
+        'f1': f1_score(y_test, y_pred)
+    }
+    
+    return model, scaler, le_gender, le_smoking, X.columns.tolist(), metrics, df
 
-# โหลดข้อมูลและเทรนโมเดล
-with st.spinner("⏳ กำลังโหลดข้อมูลและเทรนโมเดล..."):
-    df, X_train, X_test, y_train, y_test, scaler, le_gender, le_smoking = load_and_prepare_data()
-    model = train_model(X_train, y_train)
-
-feature_names = ['gender', 'age', 'hypertension', 'heart_disease',
-                 'smoking_history', 'bmi', 'HbA1c_level', 'blood_glucose_level']
+model, scaler, le_gender, le_smoking, feature_names, metrics, df = load_and_train()
 
 # Sidebar Navigation
 st.sidebar.title(" Navigation")
@@ -150,10 +145,10 @@ if page == " Home":
         st.markdown(f"- **{feat}**: {desc}")
 
 # ==================== DATASET INFO ====================
-elif page == "📊 Dataset Info":
+elif page == " Dataset Info":
     st.markdown('<h1 class="main-header">📊 Dataset Information</h1>', unsafe_allow_html=True)
     
-    st.markdown('<h2 class="sub-header">📄 Data Sample</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header"> Data Sample</h2>', unsafe_allow_html=True)
     st.dataframe(df.head(10), width='stretch')
     
     st.markdown('<h2 class="sub-header">📈 Data Statistics</h2>', unsafe_allow_html=True)
@@ -163,7 +158,7 @@ elif page == "📊 Dataset Info":
     missing = df.isnull().sum()
     st.dataframe(missing, width='stretch')
     
-    st.markdown('<h2 class="sub-header"> Target Distribution</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header">🎯 Target Distribution</h2>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         fig, ax = plt.subplots()
@@ -199,38 +194,38 @@ elif page == "🤖 Model Info":
     
     st.markdown('<h2 class="sub-header">⚙️ Model Parameters</h2>', unsafe_allow_html=True)
     params = {
-        "n_estimators": "200 (จำนวน Decision Trees)",
-        "max_depth": "15 (ความลึกสูงสุด)",
-        "min_samples_split": "5",
-        "min_samples_leaf": "2",
-        "max_features": "sqrt",
+        "n_estimators": "100 (จำนวน Decision Trees)",
+        "max_depth": "10 (ความลึกสูงสุด)",
+        "random_state": "42",
         "class_weight": "balanced",
-        "random_state": "42"
+        "n_jobs": "-1 (ใช้ CPU ทุก core)"
     }
     for param, desc in params.items():
         st.markdown(f"- **{param}**: {desc}")
     
-    # คำนวณ metrics
-    y_pred = model.predict(X_test)
-    y_pred_proba = model.predict_proba(X_test)[:, 1]
-    
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred)
-    rec = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
-    
     st.markdown('<h2 class="sub-header">📊 Model Performance</h2>', unsafe_allow_html=True)
+    
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Accuracy", f"{acc:.4f}")
+        st.metric("Accuracy", f"{metrics['accuracy']:.4f}")
     with col2:
-        st.metric("Precision", f"{prec:.4f}")
+        st.metric("Precision", f"{metrics['precision']:.4f}")
     with col3:
-        st.metric("Recall", f"{rec:.4f}")
+        st.metric("Recall", f"{metrics['recall']:.4f}")
     with col4:
-        st.metric("F1-Score", f"{f1:.4f}")
+        st.metric("F1-Score", f"{metrics['f1']:.4f}")
     
     st.markdown('<h2 class="sub-header"> Confusion Matrix</h2>', unsafe_allow_html=True)
+    
+    # Recreate confusion matrix
+    X = df.drop('diabetes', axis=1)
+    y = df['diabetes']
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
+    X_test_scaled = scaler.transform(X_test)
+    y_pred = model.predict(X_test_scaled)
+    
     cm = confusion_matrix(y_test, y_pred)
     fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
@@ -239,30 +234,27 @@ elif page == "🤖 Model Info":
     plt.title('Confusion Matrix')
     st.pyplot(fig)
     
-    st.markdown('<h2 class="sub-header">📈 ROC Curve</h2>', unsafe_allow_html=True)
-    fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
-    roc_auc = auc(fpr, tpr)
-    fig, ax = plt.subplots()
-    ax.plot(fpr, tpr, color='darkorange', lw=2,
-            label=f'ROC curve (AUC = {roc_auc:.2f})')
-    ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    ax.set_xlim([0.0, 1.0])
-    ax.set_ylim([0.0, 1.05])
-    ax.set_xlabel('False Positive Rate')
-    ax.set_ylabel('True Positive Rate')
-    ax.set_title('Receiver Operating Characteristic')
-    ax.legend(loc="lower right")
-    st.pyplot(fig)
-    
-    st.markdown('<h2 class="sub-header">📝 Classification Report</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 class="sub-header"> Classification Report</h2>', unsafe_allow_html=True)
     report = classification_report(y_test, y_pred,
                                    target_names=['No Diabetes', 'Diabetes'],
                                    output_dict=True)
     report_df = pd.DataFrame(report).transpose()
     st.dataframe(report_df.style.format('{:.4f}'), width='stretch')
+    
+    st.markdown('<h2 class="sub-header">🔍 Feature Importance</h2>', unsafe_allow_html=True)
+    importance = pd.DataFrame({
+        'Feature': feature_names,
+        'Importance': model.feature_importances_
+    }).sort_values('Importance', ascending=False)
+    
+    fig, ax = plt.subplots(figsize=(10, 5))
+    sns.barplot(data=importance, x='Importance', y='Feature', palette='viridis')
+    plt.title('Feature Importance (Random Forest)')
+    plt.tight_layout()
+    st.pyplot(fig)
 
 # ==================== PREDICTION PAGE ====================
-elif page == " Prediction":
+elif page == "🎮 Prediction":
     st.markdown('<h1 class="main-header">🎮 Diabetes Prediction</h1>', unsafe_allow_html=True)
     
     st.markdown('<h2 class="sub-header">📋 กรอกข้อมูลผู้ป่วย</h2>', unsafe_allow_html=True)
@@ -284,7 +276,7 @@ elif page == " Prediction":
         hba1c = st.number_input("HbA1c Level (%)", 3.0, 15.0, 5.7, 0.1)
         blood_glucose = st.number_input("Blood Glucose Level (mg/dL)", 50, 400, 100)
     
-    if st.button("🔮 ทำนายผล", type="primary", width='stretch'):
+    if st.button(" ทำนายผล", type="primary", width='stretch'):
         # Encode inputs
         gender_enc = le_gender.transform([gender])[0]
         smoking_enc = le_smoking.transform([smoking_history])[0]
@@ -316,7 +308,7 @@ elif page == " Prediction":
             st.warning("💡 แนะนำ: ควรปรึกษาแพทย์เพื่อตรวจวินิจฉัยเพิ่มเติม")
         else:
             st.success(f"✅ **ไม่มีความเสี่ยงเป็นโรคเบาหวาน** (ความมั่นใจ {proba[0]*100:.2f}%)")
-            st.info("💡 แนะนำ: ควรตรวจสุขภาพเป็นประจำและรักษาสุขภาพ")
+            st.info(" แนะนำ: ควรตรวจสุขภาพเป็นประจำและรักษาสุขภาพ")
         
         # Feature Importance
         st.markdown('<h2 class="sub-header">🔍 Feature Importance</h2>', unsafe_allow_html=True)
