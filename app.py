@@ -317,5 +317,5 @@ elif page == "🎮 ทายผลความเสี่ยง":
 
 # ==================== Footer ====================
 st.sidebar.markdown("---")
-st.sidebar.markdown("###### พัฒนาโดย: [ชื่อ-นามสกุล ของคุณ]")
-st.sidebar.markdown("###### 📅 ปีการศึกษา 2026")
+st.sidebar.markdown("###### พัฒนาโดย: [ภูวฤทธิ์ แช่มมั่นคง]")
+st.sidebar.markdown("###### 664245031 66/44")
