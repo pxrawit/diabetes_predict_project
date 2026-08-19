@@ -26,7 +26,7 @@ def load_css(file_name):
         with open(file_name, "r", encoding="utf-8") as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
     except FileNotFoundError:
-        st.error("ไม่พบไฟล์ style.css กรุณาตรวจสอบว่าวางไฟล์ไว้ในโฟลเดอร์เดียวกัน")
+        st.warning("⚠️ ไม่พบไฟล์ style.css กรุณาตรวจสอบว่าวางไฟล์ไว้ในโฟลเดอร์เดียวกันกับ app.py")
 
 load_css("style.css")
 
@@ -52,7 +52,10 @@ def build_model():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    model = RandomForestClassifier(n_estimators=200, max_depth=15, min_samples_split=5, min_samples_leaf=2, class_weight='balanced', random_state=42, n_jobs=-1)
+    model = RandomForestClassifier(
+        n_estimators=200, max_depth=15, min_samples_split=5, 
+        min_samples_leaf=2, class_weight='balanced', random_state=42, n_jobs=-1
+    )
     model.fit(X_train_scaled, y_train)
     
     y_pred = model.predict(X_test_scaled)
@@ -74,7 +77,13 @@ with st.spinner("🔄 กำลังเตรียมระบบ..."):
     df_raw = load_data()
 
 # ==================== TABS NAVIGATION ====================
-tabs = st.tabs(["🏠 หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", "🎮 ทายผลความเสี่ยง", "👨‍💻 ผู้พัฒนา"])
+tabs = st.tabs([
+    "🏠 หน้าหลัก", 
+    "📊 วิเคราะห์ข้อมูล", 
+    "🤖 ประสิทธิภาพโมเดล", 
+    "🎮 ทายผลความเสี่ยง", 
+    "👨‍💻 ผู้พัฒนา"
+])
 
 # ==================== TAB 1: หน้าหลัก ====================
 with tabs[0]:
@@ -107,19 +116,23 @@ with tabs[1]:
     with col1:
         fig, ax = plt.subplots(figsize=(6, 6))
         counts = df_raw['diabetes'].value_counts()
-        ax.pie(counts, labels=['ไม่เป็น (0)', 'เป็น (1)'], autopct='%1.1f%%', colors=['#10b981', '#f43f5e'], startangle=90, textprops={'color': 'white', 'fontweight': 'bold'})
+        ax.pie(counts, labels=['ไม่เป็น (0)', 'เป็น (1)'], autopct='%1.1f%%', 
+               colors=['#10b981', '#f43f5e'], startangle=90, 
+               textprops={'color': 'white', 'fontweight': 'bold'})
         ax.set_title('Distribution of Diabetes', fontweight='bold', fontsize=14, color='#ffffff', pad=15)
         fig.patch.set_alpha(0.0)
         st.pyplot(fig)
         
     with col2:
         fig, ax = plt.subplots(figsize=(6, 6))
-        sns.scatterplot(data=df_raw.sample(2000), x='age', y='blood_glucose_level', hue='diabetes', palette=['#10b981', '#f43f5e'], alpha=0.7, ax=ax)
+        sns.scatterplot(data=df_raw.sample(2000), x='age', y='blood_glucose_level', 
+                        hue='diabetes', palette=['#10b981', '#f43f5e'], alpha=0.7, ax=ax)
         ax.set_title('Age vs Blood Glucose', fontweight='bold', fontsize=14, color='#ffffff', pad=15)
         ax.tick_params(colors='white')
         ax.xaxis.label.set_color('white')
         ax.yaxis.label.set_color('white')
-        ax.legend(labels=['Non-Diabetic', 'Diabetic'], facecolor='rgba(255,255,255,0.1)', edgecolor='none', labelcolor='white')
+        # ✅ แก้ไข: เปลี่ยนจาก 'rgba(...)' เป็น Tuple (1, 1, 1, 0.1)
+        ax.legend(labels=['Non-Diabetic', 'Diabetic'], facecolor=(1, 1, 1, 0.1), edgecolor='none', labelcolor='white')
         fig.patch.set_alpha(0.0)
         st.pyplot(fig)
 
@@ -149,14 +162,14 @@ with tabs[3]:
     
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0;">👤 ข้อมูลส่วนบุคคล</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#67e8f9;">👤 ข้อมูลส่วนบุคคล</h3></div>', unsafe_allow_html=True)
         gender = st.selectbox("เพศ", ["Female", "Male", "Other"])
         age = st.slider("อายุ (ปี)", 0, 100, 30)
         hypertension = st.radio("ความดันโลหิตสูง", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
         heart_disease = st.radio("โรคหัวใจ", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
     
     with col2:
-        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0;">🩸 ข้อมูลทางการแพทย์</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#67e8f9;">🩸 ข้อมูลทางการแพทย์</h3></div>', unsafe_allow_html=True)
         smoking = st.selectbox("สูบบุหรี่", ["No Info", "never", "former", "current", "ever", "not current"])
         bmi = st.number_input("BMI", 10.0, 60.0, 24.0, 0.1)
         hba1c = st.number_input("HbA1c (%)", 3.0, 15.0, 5.7, 0.1)
@@ -201,15 +214,14 @@ with tabs[3]:
 with tabs[4]:
     st.markdown('<div class="main-header">👨‍💻 เกี่ยวกับผู้พัฒนา</div>', unsafe_allow_html=True)
     
-    # ระบบโหลดรูปแบบปลอดภัย (ถ้าไม่มีไฟล์รูป จะไม่ Error)
+    # ระบบโหลดรูปแบบปลอดภัย (ถ้าไม่มีไฟล์รูป จะไม่ Error แต่จะแสดงรูปสำรองแทน)
     img_html = ""
     if os.path.exists("profile.jpg"):
         with open("profile.jpg", "rb") as f:
             img_data = base64.b64encode(f.read()).decode()
             img_html = f'<img src="data:image/jpeg;base64,{img_data}" class="dev-avatar" alt="Profile">'
     else:
-        # รูปสำรองหากยังไม่ได้ใส่รูป
-        img_html = '<img src="https://ui-avatars.com/api/?name=Phuwadit+Cham&background=06b6d4&color=fff&size=200&font-size=0Name=Phuwadit+Cham&background=06b6d4&color=fff&size=200&font-size=0.4" class="dev-avatar" alt="Profile">'
+        img_html = '<img src="https://ui-avatars.com/api/?name=Phuwadit+Cham&background=06b6d4&color=fff&size=200&font-size=0.4" class="dev-avatar" alt="Profile">'
 
     st.markdown(f'''
         <div class="developer-card">
