@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import warnings
 warnings.filterwarnings('ignore')
 
-# ตั้งค่าหน้าเว็บ
+# ตั้งค่าหน้าเว็บ (initial_sidebar_state="expanded" จะทำให้มีปุ่ม 3 ขีดที่มุมซ้ายบน)
 st.set_page_config(
     page_title="Diabetes Prediction AI",
     page_icon="🩺",
@@ -18,58 +18,198 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS แบบเต็มรูปแบบ
+# ==================== Custom CSS แบบเต็มรูปแบบ ====================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
     * { font-family: 'Prompt', sans-serif !important; }
-    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
-    .main { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; }
-    .main-header {
-        font-size: 3rem; font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        text-align: center; margin-bottom: 2rem; padding: 1rem; border-radius: 15px;
-        background-color: rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    
+    /* ซ่อนเมนู Streamlit ด้านขวาบน */
+    #MainMenu {visibility: hidden;} 
+    footer {visibility: hidden;} 
+    header {visibility: hidden;}
+    
+    /* พื้นหลังหลัก */
+    .main { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; }
+    
+    /* ปรับแต่ง Sidebar ให้สวยงาม */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+        border-right: 1px solid rgba(56, 189, 248, 0.2);
     }
-    .metric-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); padding: 2rem;
-        border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease; border: 2px solid transparent;
+    
+    /* ปรับแต่งเมนู Radio ใน Sidebar ให้เหมือนปุ่มกด */
+    [data-testid="stSidebar"] .stRadio > div {
+        background: transparent !important;
+        gap: 8px;
     }
-    .metric-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); border-color: #667eea; }
-    .metric-card h3 { color: #667eea; font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px; }
-    .metric-card h2 { color: #2d3748; font-size: 2.5rem; font-weight: 700; margin: 0.5rem 0; }
-    .metric-card p { color: #718096; font-size: 0.9rem; margin-top: 0.5rem; }
-    .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white !important;
-        font-size: 1.1rem; font-weight: 600; padding: 1rem 2.5rem; border-radius: 50px;
-        border: none; width: 100%; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;
+    [data-testid="stSidebar"] .stRadio label {
+        color: #cbd5e1 !important;
+        font-weight: 500;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
     }
-    .stButton>button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
+    [data-testid="stSidebar"] .stRadio label:hover {
+        background: rgba(56, 189, 248, 0.1) !important;
+        border-color: rgba(56, 189, 248, 0.3);
+        color: #38bdf8 !important;
+    }
+    [data-testid="stSidebar"] .stRadio input:checked + div {
+        background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%) !important;
+        color: white !important;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    [data-testid="stSidebar"] .stRadio input:checked + div span {
+        color: white !important;
+    }
+    
+    /* กล่องข้อมูลผู้พัฒนาใน Sidebar */
     .developer-box {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px;
-        padding: 2rem 1.5rem; text-align: center; color: white;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3); margin-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 16px;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(10px);
     }
-    .dev-avatar { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 1rem; }
-    .dev-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
-    .dev-info { background: rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 1rem; margin-top: 0.8rem; backdrop-filter: blur(10px); }
-    .dev-info p { margin: 0.5rem 0; font-size: 0.9rem; }
+    .dev-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #38bdf8;
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        margin-bottom: 0.8rem;
+    }
+    .dev-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin-bottom: 0.8rem;
+    }
+    .dev-info {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 10px;
+        padding: 0.8rem;
+        text-align: left;
+    }
+    .dev-info p {
+        margin: 0.4rem 0;
+        font-size: 0.85rem;
+        color: #cbd5e1;
+    }
+    .dev-info strong {
+        color: #38bdf8;
+    }
+    
+    /* หัวข้อหลัก */
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 3px solid #0ea5e9;
+    }
+    
+    /* การ์ดเมตริก */
+    .metric-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        border: 1px solid #e2e8f0;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(14, 165, 233, 0.15);
+        border-color: #38bdf8;
+    }
+    .metric-card h3 {
+        color: #64748b;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .metric-card h2 {
+        color: #0f172a;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0.5rem 0;
+    }
+    .metric-card p {
+        color: #0ea5e9;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+    
+    /* ปุ่ม */
+    .stButton>button {
+        background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+        color: white !important;
+        font-size: 1.1rem;
+        font-weight: 600;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        border: none;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+    }
+    
+    /* การ์ดผลลัพธ์ */
     .result-card-high {
-        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-left: 6px solid #ef4444;
-        padding: 2rem; border-radius: 15px; margin-top: 1.5rem; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border-left: 5px solid #ef4444;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 1.5rem;
     }
     .result-card-low {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 6px solid #10b981;
-        padding: 2rem; border-radius: 15px; margin-top: 1.5rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        border-left: 5px solid #22c55e;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-top: 1.5rem;
     }
-    .sub-header { font-size: 1.5rem; font-weight: 600; color: #4a5568; margin-top: 2rem; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 5px solid #667eea; }
-    .stProgress > div > div > div > div { background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); border-radius: 10px; }
+    
+    /* Sub Header */
+    .sub-header {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #334155;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        padding-left: 1rem;
+        border-left: 4px solid #0ea5e9;
+    }
+    
+    /* Progress bar */
+    .stProgress > div > div > div > div {
+        background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%);
+        border-radius: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# โหลดและเตรียมข้อมูล
+# ==================== โหลดและเตรียมข้อมูล ====================
 @st.cache_data
 def load_data():
     df = pd.read_csv('diabetes_prediction_dataset.csv')
@@ -117,15 +257,10 @@ with st.spinner("🔄 กำลังเตรียมระบบ..."):
     metrics = build_model()
     df_raw = load_data()
 
-# Sidebar
-st.sidebar.markdown("""
-<style>
-    [data-testid="stSidebar"] { background: linear-gradient(180deg, #f5f7fa 0%, #c3cfe2 100%); }
-</style>
-""", unsafe_allow_html=True)
-
+# ==================== Sidebar Navigation ====================
+# ส่วนข้อมูลผู้พัฒนาใน Sidebar
 st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
-profile_image = "https://ui-avatars.com/api/?name=Phuwadit+Cham&background=ffffff&color=667eea&size=200&font-size=0.4"
+profile_image = "https://ui-avatars.com/api/?name=Phuwadit+Cham&background=0ea5e9&color=fff&size=200&font-size=0.4"
 st.sidebar.markdown(f'<img src="{profile_image}" class="dev-avatar" alt="Profile">', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="dev-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>', unsafe_allow_html=True)
 st.sidebar.markdown('''
@@ -137,13 +272,19 @@ st.sidebar.markdown('''
 ''', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
 
-# ✅ แก้ไขบั๊ก: ชื่อเมนูต้องตรงกับเงื่อนไข elif ด้านล่างเป๊ะๆ
+st.sidebar.markdown("---")
+
+# เมนูเลือกหน้า (จะมีปุ่ม 3 ขีดที่มุมซ้ายบนของหน้าจอสำหรับเปิด-ปิด Sidebar)
 page = st.sidebar.radio(
-    "🧭 เลือกเมนู",
-    ["🏠 หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", "🎮 ทายผลความเสี่ยง"]
+    "🧭 เมนูหลัก",
+    ["🏠 หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", "🎮 ทายผลความเสี่ยง"],
+    label_visibility="collapsed"
 )
 
-# หน้าหลัก
+st.sidebar.markdown("---")
+st.sidebar.markdown("<div style='text-align: center; color: #64748b; font-size: 0.8rem;'>📅 ปีการศึกษา 2026<br>🏥 Machine Learning Project</div>", unsafe_allow_html=True)
+
+# ==================== หน้าหลัก ====================
 if page == "🏠 หน้าหลัก":
     st.markdown('<div class="main-header">🩺 ระบบพยากรณ์โรคเบาหวานด้วย AI</div>', unsafe_allow_html=True)
     
@@ -162,7 +303,7 @@ if page == "🏠 หน้าหลัก":
     🌐 **สร้าง Web Application** ที่ใช้งานง่ายและสวยงาม
     """)
 
-# ✅ แก้ไขบั๊ก: เติม Emoji และลบช่องว่างหน้าข้อความให้ตรงกับ radio button
+# ==================== หน้าวิเคราะห์ข้อมูล ====================
 elif page == "📊 วิเคราะห์ข้อมูล":
     st.markdown('<div class="main-header">📊 Exploratory Data Analysis</div>', unsafe_allow_html=True)
     
@@ -171,18 +312,18 @@ elif page == "📊 วิเคราะห์ข้อมูล":
         fig, ax = plt.subplots(figsize=(6, 6))
         counts = df_raw['diabetes'].value_counts()
         ax.pie(counts, labels=['ไม่เป็น (0)', 'เป็น (1)'], autopct='%1.1f%%', 
-                colors=['#10b981', '#ef4444'], startangle=90)
+                colors=['#22c55e', '#ef4444'], startangle=90)
         ax.set_title('Distribution of Diabetes', fontweight='bold', fontsize=14)
         st.pyplot(fig)
         
     with col2:
         fig, ax = plt.subplots(figsize=(6, 6))
         sns.scatterplot(data=df_raw.sample(2000), x='age', y='blood_glucose_level', 
-                       hue='diabetes', palette=['#10b981', '#ef4444'], alpha=0.6)
+                       hue='diabetes', palette=['#22c55e', '#ef4444'], alpha=0.6)
         ax.set_title('Age vs Blood Glucose', fontweight='bold', fontsize=14)
         st.pyplot(fig)
 
-# ✅ แก้ไขบั๊ก: เติม Emoji และลบช่องว่างหน้าข้อความให้ตรงกับ radio button
+# ==================== หน้าประสิทธิภาพโมเดล ====================
 elif page == "🤖 ประสิทธิภาพโมเดล":
     st.markdown('<div class="main-header">🤖 Model Performance</div>', unsafe_allow_html=True)
     
@@ -198,7 +339,7 @@ elif page == "🤖 ประสิทธิภาพโมเดล":
     ax.set_title('Confusion Matrix', fontweight='bold', fontsize=14)
     st.pyplot(fig)
 
-# หน้าทำนายผล
+# ==================== หน้าทำนายผล ====================
 elif page == "🎮 ทายผลความเสี่ยง":
     st.markdown('<div class="main-header">🎮 ตรวจสอบความเสี่ยง</div>', unsafe_allow_html=True)
     
@@ -252,17 +393,3 @@ elif page == "🎮 ทายผลความเสี่ยง":
             st.success("💡 สุขภาพดี! ตรวจสุขภาพเป็นประจำ")
         
         st.progress(float(risk / 100))
-        
-        # ✅ เพิ่มส่วนนี้: Feature Importance เพื่อให้โปรเจกต์ดูสมบูรณ์และได้คะแนนวิเคราะห์โมเดลเต็มที่
-        st.markdown('<div class="sub-header">🔍 ปัจจัยที่มีผลต่อการตัดสินใจของโมเดล</div>', unsafe_allow_html=True)
-        importance = pd.DataFrame({
-            'Feature': metrics['feature_names'],
-            'Importance': metrics['model'].feature_importances_
-        }).sort_values('Importance', ascending=False)
-        
-        fig_imp, ax_imp = plt.subplots(figsize=(10, 5))
-        sns.barplot(data=importance, x='Importance', y='Feature', palette='viridis', ax=ax_imp)
-        ax_imp.set_title('Feature Importance (Random Forest)', fontweight='bold')
-        ax_imp.set_xlabel('Importance Score')
-        ax_imp.set_ylabel('')
-        st.pyplot(fig_imp)
