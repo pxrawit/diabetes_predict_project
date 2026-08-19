@@ -12,19 +12,17 @@ warnings.filterwarnings('ignore')
 
 # ตั้งค่าหน้าเว็บ
 st.set_page_config(
-    page_title="Diabetes Prediction AI",
-    page_icon="🩺",
+    page_title="Diabetes Prediction System",
+    page_icon="🏥",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS แบบเต็มรูปแบบ - Modern Design
+# Custom CSS - Clean Medical Dashboard Style
 st.markdown("""
 <style>
-    /* Import Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
     
-    /* ตั้งค่าฟอนต์ */
     * {
         font-family: 'Prompt', sans-serif !important;
     }
@@ -34,311 +32,197 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* พื้นหลังหลัก - Gradient Animation */
+    /* พื้นหลัง */
     .main {
-        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-        min-height: 100vh;
+        background: #f8fafc;
     }
     
-    @keyframes gradient {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
-    }
-    
-    /* Navigation Menu แบบ Modern */
-    .nav-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 1rem 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-    
-    .nav-button {
-        display: inline-block;
-        padding: 0.8rem 1.5rem;
-        margin: 0 0.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white !important;
-        text-decoration: none;
-        border-radius: 12px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        cursor: pointer;
-        border: none;
-    }
-    
-    .nav-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-    }
-    
-    .nav-button.active {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
-    }
-    
-    /* หัวข้อหลัก */
-    .main-header {
-        font-size: 3rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center;
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        border-radius: 20px;
-        background-color: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        animation: fadeInDown 1s ease;
-    }
-    
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* การ์ดเมตริกแบบ Glassmorphism */
-    .metric-card {
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(10px);
+    /* Header */
+    .app-header {
+        background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
         padding: 2rem;
-        border-radius: 20px;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 10px 40px rgba(13, 148, 136, 0.2);
+        margin-bottom: 2rem;
         text-align: center;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s ease;
-        animation: fadeInUp 1s ease;
     }
     
-    .metric-card:hover {
-        transform: translateY(-10px) scale(1.05);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-    }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    .metric-card h3 {
-        color: #667eea;
-        font-size: 1rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    .metric-card h2 {
-        color: #2d3748;
+    .app-header h1 {
+        color: white;
         font-size: 2.5rem;
         font-weight: 700;
-        margin: 0.5rem 0;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
     
-    .metric-card p {
-        color: #718096;
-        font-size: 0.9rem;
+    .app-header p {
+        color: rgba(255,255,255,0.9);
+        font-size: 1.1rem;
         margin-top: 0.5rem;
     }
     
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        backdrop-filter: blur(10px);
+    /* Tab Navigation */
+    .tab-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        background: white;
+        padding: 0.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
     
-    /* กล่องข้อมูลผู้พัฒนา */
-    .developer-box {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
-        border-radius: 20px;
-        padding: 2rem 1.5rem;
-        text-align: center;
+    .tab-button {
+        flex: 1;
+        padding: 1rem 2rem;
+        background: transparent;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #64748b;
+    }
+    
+    .tab-button.active {
+        background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
         color: white;
-        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        animation: slideInLeft 1s ease;
+        box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
     }
     
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    .dev-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 5px solid white;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        margin-bottom: 1rem;
+    /* Cards */
+    .info-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        margin-bottom: 1.5rem;
+        border-left: 5px solid #14b8a6;
         transition: transform 0.3s ease;
     }
     
-    .dev-avatar:hover {
-        transform: scale(1.1) rotate(5deg);
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
     }
     
-    .dev-name {
+    .stat-card {
+        background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px solid #99f6e4;
+    }
+    
+    .stat-card h3 {
+        color: #0f766e;
+        font-size: 2rem;
+        margin: 0;
+        font-weight: 700;
+    }
+    
+    .stat-card p {
+        color: #14b8a6;
+        margin: 0.5rem 0 0 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    /* Profile Card */
+    .profile-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 5px solid #14b8a6;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
+    }
+    
+    .profile-name {
         font-size: 1.3rem;
         font-weight: 700;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        color: #0f172a;
+        margin-bottom: 0.5rem;
     }
     
-    .dev-info {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
+    .profile-info {
+        background: #f0fdfa;
         padding: 1rem;
-        margin-top: 0.8rem;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .dev-info p {
-        margin: 0.6rem 0;
-        font-size: 0.9rem;
-        text-align: left;
-        padding-left: 0.5rem;
-    }
-    
-    /* ปุ่มทำนาย */
-    .stButton>button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white !important;
-        font-size: 1.2rem;
-        font-weight: 700;
-        padding: 1rem 2.5rem;
-        border-radius: 50px;
-        border: none;
-        width: 100%;
-        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        transition: all 0.3s ease;
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% {
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
-        50% {
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
-        }
-    }
-    
-    .stButton>button:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 12px 30px rgba(102, 126, 234, 0.6);
-        animation: none;
-    }
-    
-    /* การ์ดผลลัพธ์ */
-    .result-card-high {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%);
-        border-left: 8px solid #dc2626;
-        padding: 2.5rem;
-        border-radius: 20px;
-        margin-top: 2rem;
-        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
-        color: white;
-        backdrop-filter: blur(10px);
-        animation: shake 0.5s ease;
-    }
-    
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        75% { transform: translateX(10px); }
-    }
-    
-    .result-card-low {
-        background: linear-gradient(135deg, rgba(34, 197, 94, 0.9) 0%, rgba(22, 163, 74, 0.9) 100%);
-        border-left: 8px solid #16a34a;
-        padding: 2.5rem;
-        border-radius: 20px;
-        margin-top: 2rem;
-        box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
-        color: white;
-        backdrop-filter: blur(10px);
-        animation: bounce 0.5s ease;
-    }
-    
-    @keyframes bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
-    }
-    
-    /* Progress bar สวยๆ */
-    .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
         border-radius: 10px;
-        height: 12px;
+        margin-top: 1rem;
     }
     
-    /* Input fields */
-    .stTextInput > div > div > input, 
-    .stNumberInput > div > div > input,
-    .stSelectbox > div > div > select {
-        background: rgba(255, 255, 255, 0.9);
-        border: 2px solid rgba(102, 126, 234, 0.3);
+    /* Input Styling */
+    .stTextInput > div > div > input,
+    .stNumberInput > div > div > input {
+        background: white;
+        border: 2px solid #e2e8f0;
         border-radius: 10px;
         padding: 0.8rem;
     }
     
-    /* Tabs Styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+    .stTextInput > div > div > input:focus,
+    .stNumberInput > div > div > input:focus {
+        border-color: #14b8a6;
+        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
     }
     
-    .stTabs [data-baseweb="tab"] {
-        height: 50px;
-        padding: 0 1rem;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.5);
-        font-weight: 600;
+    /* Button */
+    .stButton > button {
+        background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+        color: white !important;
+        font-weight: 700;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
+        transition: all 0.3s ease;
     }
     
-    /* Radio buttons */
-    .stRadio > div {
-        background: rgba(255, 255, 255, 0.5);
-        padding: 1rem;
-        border-radius: 10px;
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
+    }
+    
+    /* Result Cards */
+    .result-success {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 2px solid #10b981;
+        padding: 2rem;
+        border-radius: 15px;
+        color: #065f46;
+    }
+    
+    .result-warning {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 2px solid #ef4444;
+        padding: 2rem;
+        border-radius: 15px;
+        color: #991b1b;
+    }
+    
+    /* Section Title */
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #14b8a6;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# โหลดและเตรียมข้อมูล
+# โหลดข้อมูล
 @st.cache_data
 def load_data():
     df = pd.read_csv('diabetes_prediction_dataset.csv')
@@ -361,10 +245,7 @@ def build_model():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    model = RandomForestClassifier(
-        n_estimators=200, max_depth=15, min_samples_split=5,
-        min_samples_leaf=2, class_weight='balanced', random_state=42, n_jobs=-1
-    )
+    model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42, n_jobs=-1)
     model.fit(X_train_scaled, y_train)
     
     y_pred = model.predict(X_test_scaled)
@@ -381,122 +262,159 @@ def build_model():
         'feature_names': X.columns.tolist()
     }
 
-# โหลดข้อมูล
-with st.spinner("🔄 กำลังเตรียมระบบ..."):
-    metrics = build_model()
-    df_raw = load_data()
-
-# Navigation Menu แบบ Modern
+# Header
 st.markdown("""
-<div class="nav-container">
-    <div style="text-align: center;">
-        <a href="#" class="nav-button">🏠 หน้าหลัก</a>
-        <a href="#" class="nav-button">📊 วิเคราะห์ข้อมูล</a>
-        <a href="#" class="nav-button">🤖 ประสิทธิภาพโมเดล</a>
-        <a href="#" class="nav-button"> ทายผลความเสี่ยง</a>
-    </div>
+<div class="app-header">
+    <h1>🏥 Diabetes Prediction System</h1>
+    <p>ระบบพยากรณ์โรคเบาหวานด้วย Machine Learning</p>
 </div>
 """, unsafe_allow_html=True)
 
-# Sidebar
-st.sidebar.markdown("""
-<style>
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-    }
-</style>
-""", unsafe_allow_html=True)
+# Tab Navigation
+tabs = ["📊 ภาพรวม", " วิเคราะห์ข้อมูล", "🤖 โมเดล", "🎯 ทำนายผล"]
+selected_tab = st.radio("เลือกเมนู", tabs, horizontal=True, label_visibility="collapsed")
 
-st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
-profile_image = "https://ui-avatars.com/api/?name=Phuwadit+Cham&background=ffffff&color=667eea&size=200&font-size=0.4"
-st.sidebar.markdown(f'<img src="{profile_image}" class="dev-avatar" alt="Profile">', unsafe_allow_html=True)
-st.sidebar.markdown('<div class="dev-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>', unsafe_allow_html=True)
-st.sidebar.markdown('''
-    <div class="dev-info">
-        <p>👤 <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
-        <p> <strong>รหัสนักศึกษา:</strong> 664245031</p>
-        <p>🏫 <strong>หมู่เรียน:</strong> 66/44</p>
-    </div>
-''', unsafe_allow_html=True)
-st.sidebar.markdown('</div>', unsafe_allow_html=True)
+# โหลดข้อมูลและโมเดล
+with st.spinner(" กำลังโหลดระบบ..."):
+    metrics = build_model()
+    df_raw = load_data()
 
-# เมนูแบบ Tabs
-page = st.sidebar.radio(
-    " เลือกเมนู",
-    ["🏠 หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", "🎮 ทายผลความเสี่ยง"]
-)
-
-st.sidebar.markdown("---")
-st.sidebar.markdown("<div style='text-align: center; color: #64748B; font-size: 0.8rem;'>📅 ปีการศึกษา 2026<br> Machine Learning Project</div>", unsafe_allow_html=True)
-
-# หน้าหลัก
-if "หน้าหลัก" in page:
-    st.markdown('<div class="main-header">🩺 ระบบพยากรณ์โรคเบาหวานด้วย AI</div>', unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns(3)
+# ==================== TAB 1: ภาพรวม ====================
+if selected_tab == "📊 ภาพรวม":
+    # Profile Section
+    col1, col2 = st.columns([1, 3])
     with col1:
-        st.markdown('<div class="metric-card"><h3>📦 ข้อมูล</h3><h2>100,000+</h2><p>แถวข้อมูลทางการแพทย์</p></div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="profile-card">
+            <img src="https://ui-avatars.com/api/?name=Phuwadit+Cham&background=14b8a6&color=fff&size=200" 
+                 class="profile-avatar" alt="Profile">
+            <div class="profile-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>
+            <div class="profile-info">
+                <p><strong>รหัสนักศึกษา:</strong> 664245031</p>
+                <p><strong>หมู่เรียน:</strong> 66/44</p>
+                <p><strong>ปีการศึกษา:</strong> 2026</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
     with col2:
-        st.markdown('<div class="metric-card"><h3>🧠 โมเดล</h3><h2>Random Forest</h2><p>Ensemble Learning</p></div>', unsafe_allow_html=True)
-    with col3:
-        st.markdown('<div class="metric-card"><h3>🎯 ความแม่นยำ</h3><h2>95%+</h2><p>Accuracy Score</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-title">เกี่ยวกับโปรเจกต์</div>', unsafe_allow_html=True)
+        st.markdown("""
+        <div class="info-card">
+            <h3>🎯 วัตถุประสงค์</h3>
+            <ul>
+                <li>พัฒนาโมเดล Machine Learning สำหรับพยากรณ์โรคเบาหวาน</li>
+                <li>วิเคราะห์ปัจจัยเสี่ยงที่สำคัญต่อการเกิดโรค</li>
+                <li>สร้างระบบที่ช่วยในการคัดกรองเบื้องต้น</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.markdown('<div class="section-title">สถิติ Dataset</div>', unsafe_allow_html=True)
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            st.markdown(f'<div class="stat-card"><h3>{len(df_raw):,}</h3><p>จำนวนข้อมูล</p></div>', unsafe_allow_html=True)
+        with c2:
+            st.markdown(f'<div class="stat-card"><h3>{df_raw["diabetes"].sum()}</h3><p>ผู้ป่วยเบาหวาน</p></div>', unsafe_allow_html=True)
+        with c3:
+            st.markdown(f'<div class="stat-card"><h3>{len(df_raw) - df_raw["diabetes"].sum():,}</h3><p>ไม่ป่วย</p></div>', unsafe_allow_html=True)
+        with c4:
+            st.markdown(f'<div class="stat-card"><h3>8</h3><p>Features</p></div>', unsafe_allow_html=True)
 
-    st.markdown('<div style="background: rgba(255,255,255,0.9); padding: 2rem; border-radius: 20px; margin-top: 2rem; backdrop-filter: blur(10px);"><h2 style="color: #667eea; margin-bottom: 1rem;">🎯 วัตถุประสงค์</h2><p style="font-size: 1.1rem; line-height: 1.8;">💡 <strong>พัฒนาโมเดล Machine Learning</strong> เพื่อคัดกรองความเสี่ยงโรคเบาหวานล่วงหน้า<br>🔬 <strong>วิเคราะห์ปัจจัยสำคัญ</strong> ที่ส่งผลต่อการเกิดโรค<br>🌐 <strong>สร้าง Web Application</strong> ที่ใช้งานง่ายและสวยงาม</p></div>', unsafe_allow_html=True)
-
-# หน้าวิเคราะห์ข้อมูล
-elif "วิเคราะห์ข้อมูล" in page:
-    st.markdown('<div class="main-header">📊 Exploratory Data Analysis</div>', unsafe_allow_html=True)
+# ==================== TAB 2: วิเคราะห์ข้อมูล ====================
+elif selected_tab == "📈 วิเคราะห์ข้อมูล":
+    st.markdown('<div class="section-title">การวิเคราะห์ข้อมูลเชิงสำรวจ</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
+        st.markdown('<div class="info-card"><h3>🥧 Distribution</h3></div>', unsafe_allow_html=True)
         fig, ax = plt.subplots(figsize=(6, 6))
         counts = df_raw['diabetes'].value_counts()
-        ax.pie(counts, labels=['ไม่เป็น (0)', 'เป็น (1)'], autopct='%1.1f%%', 
-                colors=['#22c55e', '#ef4444'], startangle=90)
-        ax.set_title('Distribution of Diabetes', fontweight='bold', fontsize=14, color='#2d3748')
+        ax.pie(counts, labels=['ไม่เป็น', 'เป็น'], autopct='%1.1f%%', 
+                colors=['#10b981', '#ef4444'], startangle=90)
+        ax.set_title('สัดส่วนผู้ป่วยเบาหวาน', fontweight='bold')
         st.pyplot(fig)
-        
+    
     with col2:
+        st.markdown('<div class="info-card"><h3>📊 Age Distribution</h3></div>', unsafe_allow_html=True)
         fig, ax = plt.subplots(figsize=(6, 6))
-        sns.scatterplot(data=df_raw.sample(2000), x='age', y='blood_glucose_level', 
-                       hue='diabetes', palette=['#22c55e', '#ef4444'], alpha=0.6)
-        ax.set_title('Age vs Blood Glucose', fontweight='bold', fontsize=14, color='#2d3748')
+        sns.histplot(data=df_raw, x='age', hue='diabetes', multiple='stack', palette=['#10b981', '#ef4444'])
+        ax.set_title('การกระจายตัวของอายุ', fontweight='bold')
         st.pyplot(fig)
-
-# หน้าประสิทธิภาพโมเดล
-elif "ประสิทธิภาพโมเดล" in page:
-    st.markdown('<div class="main-header">🤖 Model Performance</div>', unsafe_allow_html=True)
     
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Accuracy", f"{metrics['accuracy']:.2%}")
-    col2.metric("Precision", f"{metrics['precision']:.2%}")
-    col3.metric("Recall", f"{metrics['recall']:.2%}")
-    col4.metric("F1-Score", f"{metrics['f1']:.2%}")
-    
-    fig, ax = plt.subplots(figsize=(8, 6))
-    cm = confusion_matrix(metrics['y_test'], metrics['y_pred'])
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax)
-    ax.set_title('Confusion Matrix', fontweight='bold', fontsize=14, color='#2d3748')
+    st.markdown('<div class="info-card"><h3>🔥 Correlation Matrix</h3></div>', unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(10, 8))
+    numeric_df = df_raw.select_dtypes(include=[np.number])
+    sns.heatmap(numeric_df.corr(), annot=True, cmap='teal', fmt='.2f', ax=ax)
+    ax.set_title('Correlation Heatmap', fontweight='bold', pad=15)
     st.pyplot(fig)
 
-# หน้าทำนายผล
-elif "ทายผลความเสี่ยง" in page:
-    st.markdown('<div class="main-header">🎮 ตรวจสอบความเสี่ยง</div>', unsafe_allow_html=True)
+# ==================== TAB 3: โมเดล ====================
+elif selected_tab == " โมเดล":
+    st.markdown('<div class="section-title">Random Forest Classifier</div>', unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div class="info-card">
+        <h3>📚 เกี่ยวกับอัลกอริทึม</h3>
+        <p>Random Forest เป็น Ensemble Learning ที่สร้าง Decision Trees หลายต้น 
+        และนำผลมาโหวตเพื่อทำนายผล มีข้อดีคือป้องกัน Overfitting และทำงานได้รวดเร็ว</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="section-title">Performance Metrics</div>', unsafe_allow_html=True)
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(f'<div class="stat-card"><h3>{metrics["accuracy"]:.1%}</h3><p>Accuracy</p></div>', unsafe_allow_html=True)
+    with c2:
+        st.markdown(f'<div class="stat-card"><h3>{metrics["precision"]:.1%}</h3><p>Precision</p></div>', unsafe_allow_html=True)
+    with c3:
+        st.markdown(f'<div class="stat-card"><h3>{metrics["recall"]:.1%}</h3><p>Recall</p></div>', unsafe_allow_html=True)
+    with c4:
+        st.markdown(f'<div class="stat-card"><h3>{metrics["f1"]:.2f}</h3><p>F1-Score</p></div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
+        st.markdown('<div class="info-card"><h3> Confusion Matrix</h3></div>', unsafe_allow_html=True)
+        fig, ax = plt.subplots(figsize=(7, 6))
+        cm = confusion_matrix(metrics['y_test'], metrics['y_pred'])
+        sns.heatmap(cm, annot=True, fmt='d', cmap='teal', ax=ax)
+        ax.set_title('Confusion Matrix', fontweight='bold')
+        st.pyplot(fig)
+    
+    with col2:
+        st.markdown('<div class="info-card"><h3>📈 ROC Curve</h3></div>', unsafe_allow_html=True)
+        fpr, tpr, _ = roc_curve(metrics['y_test'], metrics['y_pred_proba'])
+        roc_auc = auc(fpr, tpr)
+        fig, ax = plt.subplots(figsize=(7, 6))
+        ax.plot(fpr, tpr, color='#0d9488', lw=2, label=f'AUC = {roc_auc:.2f}')
+        ax.plot([0, 1], [0, 1], color='gray', lw=2, linestyle='--')
+        ax.set_xlabel('False Positive Rate')
+        ax.set_ylabel('True Positive Rate')
+        ax.legend()
+        ax.set_title('ROC Curve', fontweight='bold')
+        st.pyplot(fig)
+
+# ==================== TAB 4: ทำนายผล ====================
+elif selected_tab == " ทำนายผล":
+    st.markdown('<div class="section-title">แบบฟอร์มประเมินความเสี่ยง</div>', unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown('<div class="info-card"><h3>👤 ข้อมูลส่วนตัว</h3></div>', unsafe_allow_html=True)
         gender = st.selectbox("เพศ", ["Female", "Male", "Other"])
         age = st.slider("อายุ (ปี)", 0, 100, 30)
         hypertension = st.radio("ความดันโลหิตสูง", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
         heart_disease = st.radio("โรคหัวใจ", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
     
     with col2:
+        st.markdown('<div class="info-card"><h3>🩺 ข้อมูลสุขภาพ</h3></div>', unsafe_allow_html=True)
         smoking = st.selectbox("สูบบุหรี่", ["No Info", "never", "former", "current", "ever", "not current"])
         bmi = st.number_input("BMI", 10.0, 60.0, 24.0, 0.1)
         hba1c = st.number_input("HbA1c (%)", 3.0, 15.0, 5.7, 0.1)
         glucose = st.number_input("น้ำตาลในเลือด (mg/dL)", 50, 400, 100)
-
-    if st.button(" ทำนายผล"):
+    
+    if st.button(" ประเมินความเสี่ยง", use_container_width=True):
         gender_enc = metrics['le_gender'].transform([gender])[0]
         smoking_enc = metrics['le_smoking'].transform([smoking])[0]
         
@@ -510,24 +428,20 @@ elif "ทายผลความเสี่ยง" in page:
         
         st.markdown("---")
         if prediction == 1:
-            st.markdown(f'''
-                <div class="result-card-high">
-                    <h2 style="color: white; margin: 0;">⚠️ มีความเสี่ยง</h2>
-                    <p style="font-size: 1.3rem; margin: 1rem 0;">
-                        โอกาสเป็นโรคเบาหวาน: <strong>{risk:.1f}%</strong>
-                    </p>
-                    <p style="font-size: 1rem;">💡 ควรปรึกษาแพทย์และควบคุมอาหาร</p>
-                </div>
-            ''', unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="result-warning">
+                <h2>⚠️ มีความเสี่ยงเป็นโรคเบาหวาน</h2>
+                <p style="font-size: 1.3rem;"><strong>โอกาส: {risk:.1f}%</strong></p>
+                <p> ควรปรึกษาแพทย์และตรวจสุขภาพอย่างละเอียด</p>
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.markdown(f'''
-                <div class="result-card-low">
-                    <h2 style="color: white; margin: 0;">✅ ความเสี่ยงต่ำ</h2>
-                    <p style="font-size: 1.3rem; margin: 1rem 0;">
-                        โอกาสเป็นโรคเบาหวาน: <strong>{risk:.1f}%</strong>
-                    </p>
-                    <p style="font-size: 1rem;">💡 สุขภาพดี! ตรวจสุขภาพเป็นประจำ</p>
-                </div>
-            ''', unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="result-success">
+                <h2>✅ ความเสี่ยงต่ำ</h2>
+                <p style="font-size: 1.3rem;"><strong>โอกาส: {risk:.1f}%</strong></p>
+                <p>💡 สุขภาพดี! ควรตรวจสุขภาพเป็นประจำ</p>
+            </div>
+            """, unsafe_allow_html=True)
         
         st.progress(float(risk / 100))
