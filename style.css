@@ -10,9 +10,9 @@
     display: none !important;
 }
 
-/* พื้นหลังหลัก: Modern Deep Ocean Gradient */
+/* พื้นหลังหลัก - ปรับให้เข้มขึ้น */
 .main {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: 200% 200%;
     animation: gradientBG 15s ease infinite;
     min-height: 100vh;
@@ -25,19 +25,19 @@
     100% { background-position: 0% 50%; }
 }
 
-/* หัวข้อหลัก */
+/* หัวข้อหลัก - ปรับสีตัวอักษร */
 .main-header {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #ffffff !important;
     text-align: center;
     margin-bottom: 2rem;
     padding: 1rem;
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     animation: fadeInDown 0.8s ease;
 }
 
@@ -46,15 +46,15 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Tabs Navigation แบบ Modern Pills */
+/* Tabs Navigation */
 .stTabs [data-baseweb="tab-list"] {
     gap: 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.2);
     padding: 6px;
     border-radius: 50px;
     backdrop-filter: blur(10px);
     margin-bottom: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .stTabs [data-baseweb="tab"] {
@@ -62,45 +62,44 @@
     padding: 0 1.5rem;
     border-radius: 50px;
     background: transparent;
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: #ffffff !important;
     font-weight: 500;
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }
 
 .stTabs [data-baseweb="tab"]:hover {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.3);
 }
 
 .stTabs [data-baseweb="tab"][aria-selected="true"] {
-    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%) !important;
-    color: #ffffff !important;
+    background: #ffffff !important;
+    color: #667eea !important;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Glassmorphism Cards */
+/* Glassmorphism Cards - ปรับสี */
 .metric-card, .developer-card {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     padding: 2rem;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
 }
 
 .metric-card:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(6, 182, 212, 0.5);
-    box-shadow: 0 12px 40px rgba(6, 182, 212, 0.15);
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: rgba(102, 126, 234, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
 .metric-card h3 {
-    color: #67e8f9;
+    color: #667eea !important;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -109,23 +108,24 @@
 }
 
 .metric-card h2 {
-    color: #ffffff;
+    color: #1e293b !important;
     font-size: 2.2rem;
     font-weight: 700;
     margin: 0.5rem 0;
 }
 
 .metric-card p {
-    color: #cbd5e1;
+    color: #64748b !important;
     font-size: 0.85rem;
     margin-top: 0.5rem;
 }
 
-/* Developer Card Specifics */
+/* Developer Card */
 .developer-card {
     max-width: 500px;
     margin: 0 auto;
     text-align: center;
+    background: rgba(255, 255, 255, 0.95) !important;
 }
 
 .dev-avatar {
@@ -133,8 +133,8 @@
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #06b6d4;
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    border: 3px solid #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
     margin-bottom: 1.5rem;
     transition: transform 0.3s ease;
 }
@@ -146,35 +146,35 @@
 .dev-name {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #1e293b !important;
     margin-bottom: 1.5rem;
 }
 
 .dev-info {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(241, 245, 249, 0.8);
     border-radius: 16px;
     padding: 1.5rem;
     text-align: left;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 .dev-info p {
     margin: 0.8rem 0;
     font-size: 1rem;
-    color: #e2e8f0;
+    color: #334155 !important;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .dev-info strong {
-    color: #67e8f9;
+    color: #667eea !important;
     min-width: 130px;
 }
 
 /* ปุ่มทำนาย */
 .stButton > button {
-    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%) !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     color: #ffffff !important;
     font-size: 1.1rem;
     font-weight: 600;
@@ -182,39 +182,39 @@
     border-radius: 50px;
     border: none;
     width: 100%;
-    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     transition: all 0.3s ease;
 }
 
 .stButton > button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
 }
 
 /* การ์ดผลลัพธ์ */
 .result-card-high {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(225, 29, 72, 0.15) 100%);
-    border: 1px solid rgba(244, 63, 94, 0.4);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%) !important;
+    border: 1px solid rgba(239, 68, 68, 0.5);
     padding: 2rem;
     border-radius: 20px;
     margin-top: 2rem;
-    color: #fda4af;
+    color: #ffffff !important;
     backdrop-filter: blur(10px);
 }
 
 .result-card-low {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%) !important;
+    border: 1px solid rgba(34, 197, 94, 0.5);
     padding: 2rem;
     border-radius: 20px;
     margin-top: 2rem;
-    color: #6ee7b7;
+    color: #ffffff !important;
     backdrop-filter: blur(10px);
 }
 
 /* Progress bar */
 .stProgress > div > div > div > div {
-    background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%);
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
     border-radius: 10px;
     height: 10px;
 }
@@ -223,9 +223,9 @@
 .stTextInput > div > div > input, 
 .stNumberInput > div > div > input,
 .stSelectbox > div > div > select {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #1e293b !important;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
     border-radius: 12px !important;
     padding: 0.8rem !important;
 }
@@ -233,13 +233,26 @@
 .stTextInput > div > div > input:focus,
 .stNumberInput > div > div > input:focus,
 .stSelectbox > div > div > select:focus {
-    border-color: #06b6d4 !important;
-    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.3) !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3) !important;
 }
 
 .stRadio > div {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.9);
     padding: 1rem;
     border-radius: 12px;
-    color: #e2e8f0;
+    color: #1e293b;
+}
+
+/* ปรับข้อความทั่วไป */
+p, span, div, label {
+    color: #1e293b !important;
+}
+
+/* ยกเว้นหัวข้อและข้อความที่ต้องการสีขาว */
+.main-header, 
+.stTabs [data-baseweb="tab"],
+.result-card-high h2,
+.result-card-low h2 {
+    color: #ffffff !important;
 }
