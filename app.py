@@ -6,10 +6,6 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_curve, auc, classification_report
 import base64
 import os
@@ -25,104 +21,263 @@ st.set_page_config(
 )
 
 # โหลด CSS
-def load_css(file_name):
-    try:
-        with open(file_name, "r", encoding="utf-8") as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except FileNotFoundError:
-        pass
+def load_css():
+    st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+    
+    * { font-family: 'Prompt', sans-serif !important; }
+    
+    #MainMenu, footer, header { visibility: hidden; }
+    
+    .main {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-size: 200% 200%;
+        animation: gradientBG 15s ease infinite;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+    
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ffffff !important;
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .metric-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(16px);
+        padding: 2rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .metric-card h3 {
+        color: #667eea !important;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .metric-card h2 {
+        color: #1e293b !important;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin: 0.5rem 0;
+    }
+    
+    .metric-card p {
+        color: #64748b !important;
+        font-size: 0.85rem;
+    }
+    
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px;
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+        margin-bottom: 2rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        height: 45px;
+        padding: 0 1.5rem;
+        border-radius: 50px;
+        background: transparent;
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        background: #ffffff !important;
+        color: #667eea !important;
+    }
+    
+    .developer-card {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(16px);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+    
+    .dev-avatar {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #667eea;
+        box-shadow: 0 0 25px rgba(102, 126, 234, 0.4);
+        margin-bottom: 1.5rem;
+    }
+    
+    .dev-name {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1e293b !important;
+        margin-bottom: 1.5rem;
+    }
+    
+    .dev-info {
+        background: rgba(241, 245, 249, 0.9);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: left;
+    }
+    
+    .dev-info p {
+        margin: 0.8rem 0;
+        font-size: 1.05rem;
+        color: #334155 !important;
+    }
+    
+    .dev-info strong {
+        color: #667eea !important;
+    }
+    
+    .result-card-high {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 2rem;
+        border-radius: 20px;
+        margin-top: 2rem;
+        color: #ffffff !important;
+    }
+    
+    .result-card-low {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 2rem;
+        border-radius: 20px;
+        margin-top: 2rem;
+        color: #ffffff !important;
+    }
+    
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: #ffffff !important;
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        border: none;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-load_css("style.css")
+load_css()
 
-# โหลดและเตรียมข้อมูล
+# โหลดข้อมูล
 @st.cache_data
 def load_data():
     return pd.read_csv('diabetes_prediction_dataset.csv')
 
+# สร้างโมเดล
 @st.cache_resource
 def build_model():
     df = load_data()
+    
+    # Preprocessing
     le_gender = LabelEncoder()
     le_smoking = LabelEncoder()
+    
     df['gender'] = le_gender.fit_transform(df['gender'])
     df['smoking_history'] = le_smoking.fit_transform(df['smoking_history'])
     
     X = df.drop('diabetes', axis=1)
     y = df['diabetes']
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
     
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    # สร้างหลายโมเดลเพื่อเปรียบเทียบ
-    models = {
-        'Random Forest': RandomForestClassifier(n_estimators=200, max_depth=15, class_weight='balanced', random_state=42, n_jobs=-1),
-        'Logistic Regression': LogisticRegression(max_iter=1000, class_weight='balanced', random_state=42),
-        'Decision Tree': DecisionTreeClassifier(max_depth=10, class_weight='balanced', random_state=42),
-        'SVM': SVC(kernel='rbf', probability=True, class_weight='balanced', random_state=42),
-        'KNN': KNeighborsClassifier(n_neighbors=5)
-    }
+    # Train Model
+    model = RandomForestClassifier(
+        n_estimators=200,
+        max_depth=15,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        class_weight='balanced',
+        random_state=42,
+        n_jobs=-1
+    )
+    model.fit(X_train_scaled, y_train)
     
-    results = {}
-    best_model = None
-    best_acc = 0
-    
-    for name, model in models.items():
-        model.fit(X_train_scaled, y_train)
-        y_pred = model.predict(X_test_scaled)
-        y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
-        
-        acc = accuracy_score(y_test, y_pred)
-        results[name] = {
-            'accuracy': acc,
-            'precision': precision_score(y_test, y_pred, zero_division=0),
-            'recall': recall_score(y_test, y_pred, zero_division=0),
-            'f1': f1_score(y_test, y_pred, zero_division=0),
-            'y_pred': y_pred,
-            'y_pred_proba': y_pred_proba,
-            'model': model
-        }
-        
-        if acc > best_acc:
-            best_acc = acc
-            best_model = name
+    # Predictions
+    y_pred = model.predict(X_test_scaled)
+    y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
     
     return {
-        'results': results,
-        'best_model': best_model,
-        'best_acc': best_acc,
+        'model': model,
         'scaler': scaler,
         'le_gender': le_gender,
         'le_smoking': le_smoking,
+        'X_test': X_test_scaled,
+        'y_test': y_test,
+        'y_pred': y_pred,
+        'y_pred_proba': y_pred_proba,
         'feature_names': X.columns.tolist(),
-        'X_test_scaled': X_test_scaled,
-        'y_test': y_test
+        'df': df
     }
 
+# โหลดข้อมูลและโมเดล
 with st.spinner("🔄 กำลังเตรียมระบบ..."):
     metrics = build_model()
     df_raw = load_data()
 
-# TABS NAVIGATION (เพิ่มให้ครบ 7 tabs)
+# Tabs Navigation
 tabs = st.tabs([
     "🏠 หน้าหลัก",
-    " Data Preprocessing",
-    " ทฤษฎีโมเดล ML",
-    " วิเคราะห์ข้อมูล",
-    " ประสิทธิภาพโมเดล",
+    "📊 วิเคราะห์ข้อมูล",
+    "🤖 ประสิทธิภาพโมเดล",
     "🎮 ทายผลความเสี่ยง",
-    "👨💻 ผู้พัฒนา"
+    "👨‍💻 ผู้พัฒนา"
 ])
 
 # ==================== TAB 1: หน้าหลัก ====================
 with tabs[0]:
-    st.markdown('<div class="main-header">🩺 ระบบพยากรณ์โรคเบาหวานด้วย AI</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header"> ระบบพยากรณ์โรคเบาหวานด้วย AI</div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown('<div class="metric-card"><h3> ข้อมูล</h3><h2>100,000+</h2><p>แถวข้อมูลทางการแพทย์</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-card"><h3>📦 ข้อมูล</h3><h2>90,000+</h2><p>แถวข้อมูลทางการแพทย์</p></div>', unsafe_allow_html=True)
     with col2:
         st.markdown('<div class="metric-card"><h3>🧠 โมเดล</h3><h2>Random Forest</h2><p>Ensemble Learning</p></div>', unsafe_allow_html=True)
     with col3:
@@ -130,130 +285,17 @@ with tabs[0]:
 
     st.markdown('''
     <div class="metric-card" style="margin-top: 2rem; text-align: left;">
-        <h3 style="color: #ffffff; font-size: 1.2rem; margin-bottom: 1rem;">🎯 วัตถุประสงค์</h3>
-        <p style="color: #cbd5e1; line-height: 1.8; font-size: 1rem;">
-        💡 <strong style="color: #67e8f9;">พัฒนาโมเดล Machine Learning</strong> เพื่อคัดกรองความเสี่ยงโรคเบาหวานล่วงหน้า<br>
-        🔬 <strong style="color: #67e8f9;">วิเคราะห์ปัจจัยสำคัญ</strong> ที่ส่งผลต่อการเกิดโรค<br>
-        🌐 <strong style="color: #67e8f9;">สร้าง Web Application</strong> ที่ใช้งานง่ายและสวยงาม
+        <h3 style="color: #ffffff; font-size: 1.2rem; margin-bottom: 1rem;"> วัตถุประสงค์</h3>
+        <p style="color: #1e293b; line-height: 1.8; font-size: 1rem;">
+        💡 <strong>พัฒนาโมเดล Machine Learning</strong> เพื่อคัดกรองความเสี่ยงโรคเบาหวานล่วงหน้า<br>
+        🔬 <strong>วิเคราะห์ปัจจัยสำคัญ</strong> ที่ส่งผลต่อการเกิดโรค<br>
+        🌐 <strong>สร้าง Web Application</strong> ที่ใช้งานง่ายและสวยงาม
         </p>
     </div>
     ''', unsafe_allow_html=True)
 
-# ==================== TAB 2: Data Preprocessing ====================
+# ==================== TAB 2: วิเคราะห์ข้อมูล ====================
 with tabs[1]:
-    st.markdown('<div class="main-header">🧹 Data Preprocessing</div>', unsafe_allow_html=True)
-    
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-bottom: 1.5rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;">📋 ขั้นตอนการเตรียมข้อมูล</h3>
-        <p style="color: #cbd5e1; line-height: 1.8;">
-        การเตรียมข้อมูล (Data Preprocessing) เป็นขั้นตอนสำคัญก่อนนำข้อมูลไปฝึกโมเดล Machine Learning โดยมีขั้นตอนดังนี้:
-        </p>
-    </div>
-    ''', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown('''
-        <div class="metric-card" style="text-align: left;">
-            <h3 style="color: #67e8f9; margin-top: 0;">1️⃣ ตรวจสอบ Missing Values</h3>
-            <p style="color: #cbd5e1;">ตรวจสอบและจัดการค่าว่างใน Dataset เพื่อให้ข้อมูลสมบูรณ์</p>
-            
-            <h3 style="color: #67e8f9;">2️⃣ Label Encoding</h3>
-            <p style="color: #cbd5e1;">แปลงตัวแปรหมวดหมู่ (Categorical) ให้เป็นตัวเลข:</p>
-            <ul style="color: #cbd5e1; padding-left: 1.5rem;">
-                <li><strong>Gender:</strong> Female → 0, Male → 1, Other → 2</li>
-                <li><strong>Smoking History:</strong> never → 0, former → 1, current → 2, ...</li>
-            </ul>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('''
-        <div class="metric-card" style="text-align: left;">
-            <h3 style="color: #67e8f9; margin-top: 0;">3️⃣ Feature Scaling (StandardScaler)</h3>
-            <p style="color: #cbd5e1;">ปรับสเกลข้อมูลให้อยู่ในช่วงมาตรฐาน (mean=0, std=1) ช่วยให้โมเดลเรียนรู้ได้ดีขึ้น</p>
-            <p style="color: #67e8f9; font-family: monospace; background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 8px;">
-            z = (x - μ) / σ
-            </p>
-            
-            <h3 style="color: #67e8f9;">4️⃣ Train-Test Split</h3>
-            <p style="color: #cbd5e1;">แบ่งข้อมูลเป็น:</p>
-            <ul style="color: #cbd5e1; padding-left: 1.5rem;">
-                <li><strong>Training Set:</strong> 80% (ฝึกโมเดล)</li>
-                <li><strong>Test Set:</strong> 20% (ทดสอบโมเดล)</li>
-            </ul>
-            <p style="color: #67e8f9;">ใช้ stratify=y เพื่อรักษาสัดส่วน classes</p>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-top: 1.5rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;"> โครงสร้าง Dataset</h3>
-        <p style="color: #cbd5e1;"><strong>จำนวนข้อมูล:</strong> 100,000+ records</p>
-        <p style="color: #cbd5e1;"><strong>Features (8 ตัว):</strong> Gender, Age, Hypertension, Heart Disease, Smoking History, BMI, HbA1c Level, Blood Glucose Level</p>
-        <p style="color: #cbd5e1;"><strong>Target Variable:</strong> Diabetes (0 = ไม่เป็น, 1 = เป็น)</p>
-    </div>
-    ''', unsafe_allow_html=True)
-
-# ==================== TAB 3: ทฤษฎีโมเดล ML ====================
-with tabs[2]:
-    st.markdown('<div class="main-header">🧠 ทฤษฎีโมเดล Machine Learning</div>', unsafe_allow_html=True)
-    
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-bottom: 1.5rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;">🌳 Random Forest Classifier</h3>
-        <p style="color: #cbd5e1; line-height: 1.8;">
-        <strong>Random Forest</strong> เป็นอัลกอริทึม Ensemble Learning ที่สร้าง Decision Trees หลายๆ ต้น แล้วนำผลลัพธ์มาโหวตเพื่อทำนายผล
-        </p>
-    </div>
-    ''', unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown('''
-        <div class="metric-card" style="text-align: left;">
-            <h3 style="color: #67e8f9; margin-top: 0;">🔄 หลักการทำงาน 4 ขั้นตอน</h3>
-            <ol style="color: #cbd5e1; padding-left: 1.5rem; line-height: 1.8;">
-                <li><strong>Bootstrap Sampling:</strong> สุ่มเลือกข้อมูลด้วยการ sampling แบบมีแทนที่</li>
-                <li><strong>Feature Randomness:</strong> สุ่มเลือก features ในการ split แต่ละ node</li>
-                <li><strong>Tree Building:</strong> สร้าง Decision Tree หลายร้อยต้น</li>
-                <li><strong>Majority Voting:</strong> นำผลลัพธ์จากทุก trees มาโหวตเพื่อทำนายผล</li>
-            </ol>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown('''
-        <div class="metric-card" style="text-align: left;">
-            <h3 style="color: #67e8f9; margin-top: 0;">✅ เหตุผลที่เลือก Random Forest</h3>
-            <ul style="color: #cbd5e1; padding-left: 1.5rem; line-height: 1.8;">
-                <li>ป้องกันปัญหา <strong>Overfitting</strong> ได้ดี</li>
-                <li>จัดการกับ <strong>Imbalanced Data</strong> ได้ดี (ใช้ class_weight='balanced')</li>
-                <li>สามารถบอก <strong>Feature Importance</strong> ได้</li>
-                <li>ให้ความ<strong>แม่นยำสูง</strong> (Accuracy > 95%)</li>
-                <li>ทำงานได้เร็วด้วย <strong>Parallel Processing</strong> (n_jobs=-1)</li>
-            </ul>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-top: 1.5rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;">️ Parameters ที่ใช้</h3>
-        <p style="color: #67e8f9; font-family: monospace; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; line-height: 1.8;">
-        n_estimators = 200  # จำนวน Decision Trees<br>
-        max_depth = 15      # ความลึกสูงสุดของ tree<br>
-        class_weight = 'balanced'  # จัดการ imbalanced data<br>
-        random_state = 42   # เพื่อความ reproducible<br>
-        n_jobs = -1         # ใช้ทุก CPU cores
-        </p>
-    </div>
-    ''', unsafe_allow_html=True)
-
-# ==================== TAB 4: วิเคราะห์ข้อมูล ====================
-with tabs[3]:
     st.markdown('<div class="main-header">📊 Exploratory Data Analysis</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -270,7 +312,7 @@ with tabs[3]:
     with col2:
         fig, ax = plt.subplots(figsize=(6, 6))
         sns.scatterplot(data=df_raw.sample(2000), x='age', y='blood_glucose_level', 
-                        hue='diabetes', palette=['#10b981', '#f43f5e'], alpha=0.7, ax=ax)
+                       hue='diabetes', palette=['#10b981', '#f43f5e'], alpha=0.7, ax=ax)
         ax.set_title('Age vs Blood Glucose', fontweight='bold', fontsize=14, color='#ffffff', pad=15)
         ax.tick_params(colors='white')
         ax.xaxis.label.set_color('white')
@@ -278,44 +320,35 @@ with tabs[3]:
         ax.legend(labels=['Non-Diabetic', 'Diabetic'], facecolor=(1, 1, 1, 0.1), edgecolor='none', labelcolor='white')
         fig.patch.set_alpha(0.0)
         st.pyplot(fig)
+    
+    st.markdown('<div class="main-header" style="font-size: 1.8rem;">🔥 Correlation Heatmap</div>', unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(10, 8))
+    corr = df_raw.select_dtypes(include=[np.number]).corr()
+    sns.heatmap(corr, annot=True, cmap='coolwarm', fmt='.2f', ax=ax, annot_kws={'color': 'white', 'size': 9})
+    ax.set_title('Feature Correlation', color='#e2e8f0', fontweight='bold', pad=15)
+    fig.patch.set_alpha(0.0)
+    ax.set_facecolor('#1e293b')
+    plt.xticks(color='#94a3b8')
+    plt.yticks(color='#94a3b8')
+    st.pyplot(fig)
 
-# ==================== TAB 5: ประสิทธิภาพโมเดล ====================
-with tabs[4]:
+# ==================== TAB 3: ประสิทธิภาพโมเดล ====================
+with tabs[2]:
     st.markdown('<div class="main-header">🤖 Model Performance</div>', unsafe_allow_html=True)
     
-    # ตารางเปรียบเทียบหลายโมเดล
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-bottom: 2rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;">📊 ตารางเปรียบเทียบโมเดล</h3>
-    </div>
-    ''', unsafe_allow_html=True)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(f'<div class="metric-card"><h3>Accuracy</h3><h2>{metrics["y_pred_proba"].shape[0]}%</h2></div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown(f'<div class="metric-card"><h3>Precision</h3><h2>{precision_score(metrics["y_test"], metrics["y_pred"]):.1%}</h2></div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown(f'<div class="metric-card"><h3>Recall</h3><h2>{recall_score(metrics["y_test"], metrics["y_pred"]):.1%}</h2></div>', unsafe_allow_html=True)
+    with col4:
+        st.markdown(f'<div class="metric-card"><h3>F1-Score</h3><h2>{f1_score(metrics["y_test"], metrics["y_pred"]):.2f}</h2></div>', unsafe_allow_html=True)
     
-    comparison_data = []
-    for name, result in metrics['results'].items():
-        comparison_data.append({
-            'Model': name,
-            'Accuracy': f"{result['accuracy']:.2%}",
-            'Precision': f"{result['precision']:.2%}",
-            'Recall': f"{result['recall']:.2%}",
-            'F1-Score': f"{result['f1']:.2%}"
-        })
-    
-    df_comparison = pd.DataFrame(comparison_data)
-    st.dataframe(df_comparison, use_container_width=True, height=200)
-    
-    st.success(f"🏆 **โมเดลที่ดีที่สุด: {metrics['best_model']}** (Accuracy: {metrics['best_acc']:.2%})")
-    
-    # Confusion Matrix ของโมเดลที่ดีที่สุด
-    best_result = metrics['results'][metrics['best_model']]
-    
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-top: 2rem; margin-bottom: 1rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;">🎯 Confusion Matrix ({})</h3>
-    </div>
-    '''.format(metrics['best_model']), unsafe_allow_html=True)
-    
+    st.markdown('<div class="main-header" style="font-size: 1.8rem;">🎯 Confusion Matrix</div>', unsafe_allow_html=True)
     fig, ax = plt.subplots(figsize=(8, 6))
-    cm = confusion_matrix(metrics['y_test'], best_result['y_pred'])
+    cm = confusion_matrix(metrics['y_test'], metrics['y_pred'])
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax, annot_kws={"size": 14, "color": "white", "fontweight": "bold"})
     ax.set_title('Confusion Matrix', fontweight='bold', fontsize=14, color='#ffffff', pad=15)
     ax.tick_params(colors='white')
@@ -324,57 +357,48 @@ with tabs[4]:
     fig.patch.set_alpha(0.0)
     st.pyplot(fig)
     
-    # ROC Curve
-    st.markdown('''
-    <div class="metric-card" style="text-align: left; margin-top: 2rem; margin-bottom: 1rem;">
-        <h3 style="color: #67e8f9; margin-top: 0;">📈 ROC Curve</h3>
-    </div>
-    ''', unsafe_allow_html=True)
-    
+    st.markdown('<div class="main-header" style="font-size: 1.8rem;">📈 ROC Curve</div>', unsafe_allow_html=True)
+    fpr, tpr, _ = roc_curve(metrics['y_test'], metrics['y_pred_proba'])
+    roc_auc = auc(fpr, tpr)
     fig, ax = plt.subplots(figsize=(8, 6))
-    for name, result in metrics['results'].items():
-        fpr, tpr, _ = roc_curve(metrics['y_test'], result['y_pred_proba'])
-        roc_auc = auc(fpr, tpr)
-        ax.plot(fpr, tpr, linewidth=2, label=f'{name} (AUC = {roc_auc:.3f})')
-    
-    ax.plot([0, 1], [0, 1], 'k--', linewidth=1)
-    ax.set_xlabel('False Positive Rate', color='white', fontsize=12)
-    ax.set_ylabel('True Positive Rate', color='white', fontsize=12)
-    ax.set_title('ROC Curve Comparison', fontweight='bold', fontsize=14, color='#ffffff', pad=15)
-    ax.legend(loc='lower right', facecolor=(1, 1, 1, 0.1), edgecolor='none', labelcolor='white')
-    ax.tick_params(colors='white')
+    ax.plot(fpr, tpr, color='#06b6d4', lw=3, label=f'AUC = {roc_auc:.3f}')
+    ax.plot([0, 1], [0, 1], color='#64748b', lw=2, linestyle='--')
+    ax.set_xlabel('False Positive Rate', color='#94a3b8')
+    ax.set_ylabel('True Positive Rate', color='#94a3b8')
+    ax.set_title('ROC Curve', color='#e2e8f0', fontweight='bold', pad=15)
+    ax.legend(loc='lower right')
     fig.patch.set_alpha(0.0)
+    ax.set_facecolor('#1e293b')
     st.pyplot(fig)
 
-# ==================== TAB 6: ทายผลความเสี่ยง ====================
-with tabs[5]:
+# ==================== TAB 4: ทายผลความเสี่ยง ====================
+with tabs[3]:
     st.markdown('<div class="main-header">🎮 ตรวจสอบความเสี่ยง</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#67e8f9;">👤 ข้อมูลส่วนบุคคล</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#667eea;">👤 ข้อมูลส่วนบุคคล</h3></div>', unsafe_allow_html=True)
         gender = st.selectbox("เพศ", ["Female", "Male", "Other"])
         age = st.slider("อายุ (ปี)", 0, 100, 30)
         hypertension = st.radio("ความดันโลหิตสูง", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
         heart_disease = st.radio("โรคหัวใจ", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
     
     with col2:
-        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#67e8f9;"> ข้อมูลทางการแพทย์</h3></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#667eea;"> ข้อมูลทางการแพทย์</h3></div>', unsafe_allow_html=True)
         smoking = st.selectbox("สูบบุหรี่", ["No Info", "never", "former", "current", "ever", "not current"])
         bmi = st.number_input("BMI", 10.0, 60.0, 24.0, 0.1)
         hba1c = st.number_input("HbA1c (%)", 3.0, 15.0, 5.7, 0.1)
         glucose = st.number_input("น้ำตาลในเลือด (mg/dL)", 50, 400, 100)
 
-    if st.button(" ทำนายผล"):
+    if st.button("🔮 ทำนายผล"):
         gender_enc = metrics['le_gender'].transform([gender])[0]
         smoking_enc = metrics['le_smoking'].transform([smoking])[0]
         
         input_data = np.array([[gender_enc, age, hypertension, heart_disease, smoking_enc, bmi, hba1c, glucose]])
         input_scaled = metrics['scaler'].transform(input_data)
         
-        best_model_obj = metrics['results'][metrics['best_model']]['model']
-        prediction = best_model_obj.predict(input_scaled)[0]
-        proba = best_model_obj.predict_proba(input_scaled)[0]
+        prediction = metrics['model'].predict(input_scaled)[0]
+        proba = metrics['model'].predict_proba(input_scaled)[0]
         risk = proba[1] * 100
         
         st.markdown("---")
@@ -385,7 +409,7 @@ with tabs[5]:
                     <p style="font-size: 1.4rem; margin: 1rem 0; font-weight: 600; color: #ffffff;">
                         โอกาสเป็นโรคเบาหวาน: <strong>{risk:.1f}%</strong>
                     </p>
-                    <p style="font-size: 1rem; color: #fda4af;">💡 ควรปรึกษาแพทย์และควบคุมอาหาร</p>
+                    <p style="font-size: 1rem; color: #fda4af;"> ควรปรึกษาแพทย์และควบคุมอาหาร</p>
                 </div>
             ''', unsafe_allow_html=True)
         else:
@@ -401,17 +425,18 @@ with tabs[5]:
         
         st.progress(float(risk / 100))
 
-# ==================== TAB 7: ผู้พัฒนา ====================
-with tabs[6]:
+# ==================== TAB 5: ผู้พัฒนา ====================
+with tabs[4]:
     st.markdown('<div class="main-header">👨‍💻 เกี่ยวกับผู้พัฒนา</div>', unsafe_allow_html=True)
     
+    # โหลดรูป
     img_html = ""
     if os.path.exists("profile.jpg"):
         with open("profile.jpg", "rb") as f:
             img_data = base64.b64encode(f.read()).decode()
             img_html = f'<img src="data:image/jpeg;base64,{img_data}" class="dev-avatar" alt="Profile">'
     else:
-        img_html = '<img src="https://ui-avatars.com/api/?name=Phuwadit+Cham&background=06b6d4&color=fff&size=200&font-size=0.4" class="dev-avatar" alt="Profile">'
+        img_html = '<img src="https://ui-avatars.com/api/?name=Phuwadit+Cham&background=667eea&color=fff&size=200&font-size=0.4" class="dev-avatar" alt="Profile">'
 
     st.markdown(f'''
         <div class="developer-card">
@@ -419,7 +444,7 @@ with tabs[6]:
             <div class="dev-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>
             <div class="dev-info">
                 <p>👤 <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
-                <p>🆔 <strong>รหัสนักศึกษา:</strong> 664245031</p>
+                <p> <strong>รหัสนักศึกษา:</strong> 664245031</p>
                 <p>🏫 <strong>หมู่เรียน:</strong> 66/44</p>
                 <p>📅 <strong>ปีการศึกษา:</strong> 2026</p>
                 <p>💻 <strong>โปรเจกต์:</strong> Machine Learning Project</p>
