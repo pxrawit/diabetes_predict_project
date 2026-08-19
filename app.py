@@ -454,11 +454,11 @@ with tabs[3]:
 with tabs[4]:
     st.markdown('<div class="main-header">👨‍💻 เกี่ยวกับผู้พัฒนา</div>', unsafe_allow_html=True)
     
-st.sidebar.image("profile.jpg", width=90)
+    # แสดงรูปจากโฟลเดอร์โดยตรง
+    st.image("profile.jpg", width=200)
     
-    st.markdown(f'''
+    st.markdown('''
         <div class="developer-card">
-            <img src="{profile_image}" class="dev-avatar" alt="Profile">
             <div class="dev-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>
             <div class="dev-info">
                 <p>👤 <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
