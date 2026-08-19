@@ -172,7 +172,7 @@ with tabs[2]:
         ax.tick_params(colors='white')
         ax.xaxis.label.set_color('white')
         ax.yaxis.label.set_color('white')
-        # ✅ แก้ไขจุดที่ทำให้เกิด Error: ใช้ Tuple (1, 1, 1, 0.1) แทน String 'rgba(...)'
+        # ✅ แก้ไข: ใช้ Tuple (1, 1, 1, 0.1) แทน String 'rgba(...)'
         ax.legend(labels=['Non-Diabetic', 'Diabetic'], facecolor=(1, 1, 1, 0.1), edgecolor='none', labelcolor='white')
         fig.patch.set_alpha(0.0)
         st.pyplot(fig)
@@ -209,11 +209,15 @@ with tabs[3]:
     st.markdown('<div class="main-header" style="font-size: 1.8rem;">📊 ตารางเปรียบเทียบโมเดล</div>', unsafe_allow_html=True)
     results_df = metrics['results_df'].copy()
     display_df = results_df[['Model', 'Accuracy', 'Precision', 'Recall', 'F1-Score']].copy()
+    
+    # ✅ แก้ไข: จัดรูปแบบเป็น String สำหรับการแสดงผล (ไม่ใช้ background_gradient กับ String)
     display_df['Accuracy'] = display_df['Accuracy'].apply(lambda x: f'{x:.2%}')
     display_df['Precision'] = display_df['Precision'].apply(lambda x: f'{x:.2%}')
     display_df['Recall'] = display_df['Recall'].apply(lambda x: f'{x:.2%}')
     display_df['F1-Score'] = display_df['F1-Score'].apply(lambda x: f'{x:.4f}')
-    st.dataframe(display_df.style.background_gradient(cmap='Blues', subset=['Accuracy', 'Precision', 'Recall', 'F1-Score']), use_container_width=True, hide_index=True)
+    
+    # ✅ แก้ไข: ใช้ width="stretch" แทน use_container_width เพื่อลบ Warning
+    st.dataframe(display_df, width="stretch", hide_index=True)
     
     st.markdown('<div class="main-header" style="font-size: 1.8rem;">📈 กราฟเปรียบเทียบประสิทธิภาพ</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
