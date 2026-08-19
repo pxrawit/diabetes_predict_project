@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import warnings
 warnings.filterwarnings('ignore')
 
-# ตั้งค่าหน้าเว็บ (initial_sidebar_state="expanded" จะแสดงแถบซ้ายโดยอัตโนมัติ)
+# ตั้งค่าหน้าเว็บ
 st.set_page_config(
     page_title="Diabetes Prediction AI",
     page_icon="🩺",
@@ -18,27 +18,29 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==================== Custom CSS แบบเต็มรูปแบบ ====================
+# Custom CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
     * { font-family: 'Prompt', sans-serif !important; }
     
-    /* ซ่อนเมนู Streamlit ด้านขวาบน */
     #MainMenu {visibility: hidden;} 
     footer {visibility: hidden;} 
     header {visibility: hidden;}
     
-    /* พื้นหลังหลัก */
+    /* ซ่อนปุ่มย่อ/ขยาย Sidebar */
+    button[kind="icon"][aria-label="Collapse sidebar"],
+    button[kind="icon"][aria-label="Expand sidebar"] {
+        display: none !important;
+    }
+    
     .main { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); min-height: 100vh; }
     
-    /* ปรับแต่ง Sidebar ให้สวยงาม */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
         border-right: 1px solid rgba(56, 189, 248, 0.2);
     }
     
-    /* ปรับแต่งเมนู Radio ใน Sidebar ให้เหมือนปุ่มกด */
     [data-testid="stSidebar"] .stRadio > div { background: transparent !important; gap: 8px; }
     [data-testid="stSidebar"] .stRadio label {
         color: #cbd5e1 !important; font-weight: 500; padding: 12px 16px;
@@ -56,7 +58,6 @@ st.markdown("""
     }
     [data-testid="stSidebar"] .stRadio input:checked + div span { color: white !important; }
     
-    /* กล่องข้อมูลผู้พัฒนาใน Sidebar */
     .developer-box {
         background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(56, 189, 248, 0.2);
         border-radius: 16px; padding: 1.5rem 1rem; text-align: center;
@@ -72,13 +73,11 @@ st.markdown("""
     .dev-info p { margin: 0.4rem 0; font-size: 0.85rem; color: #cbd5e1; }
     .dev-info strong { color: #38bdf8; }
     
-    /* หัวข้อหลัก */
     .main-header {
         font-size: 2.5rem; font-weight: 700; color: #0f172a; text-align: center;
         margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 3px solid #0ea5e9;
     }
     
-    /* การ์ดเมตริก */
     .metric-card {
         background: white; padding: 1.5rem; border-radius: 16px; text-align: center;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); transition: all 0.3s ease; border: 1px solid #e2e8f0;
@@ -88,7 +87,6 @@ st.markdown("""
     .metric-card h2 { color: #0f172a; font-size: 2.2rem; font-weight: 700; margin: 0.5rem 0; }
     .metric-card p { color: #0ea5e9; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; }
     
-    /* ปุ่ม */
     .stButton>button {
         background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%); color: white !important;
         font-size: 1.1rem; font-weight: 600; padding: 0.8rem 2rem; border-radius: 12px;
@@ -96,7 +94,6 @@ st.markdown("""
     }
     .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5); }
     
-    /* การ์ดผลลัพธ์ */
     .result-card-high {
         background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border-left: 5px solid #ef4444;
         padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem;
@@ -106,18 +103,16 @@ st.markdown("""
         padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem;
     }
     
-    /* Sub Header */
     .sub-header {
         font-size: 1.3rem; font-weight: 600; color: #334155; margin-top: 2rem;
         margin-bottom: 1rem; padding-left: 1rem; border-left: 4px solid #0ea5e9;
     }
     
-    /* Progress bar */
     .stProgress > div > div > div > div { background: linear-gradient(90deg, #0ea5e9 0%, #06b6d4 100%); border-radius: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
-# ==================== โหลดและเตรียมข้อมูล ====================
+# โหลดและเตรียมข้อมูล
 @st.cache_data
 def load_data():
     df = pd.read_csv('diabetes_prediction_dataset.csv')
@@ -160,7 +155,6 @@ def build_model():
         'feature_names': X.columns.tolist()
     }
 
-# โหลดข้อมูล
 try:
     with st.spinner("🔄 กำลังเตรียมระบบ..."):
         metrics = build_model()
@@ -169,16 +163,16 @@ except Exception as e:
     st.error(f"⚠️ เกิดข้อผิดพลาดในการโหลดข้อมูล: {e}")
     st.stop()
 
-# ==================== Sidebar Navigation ====================
+# Sidebar
 st.sidebar.markdown('<div class="developer-box">', unsafe_allow_html=True)
 profile_image = "https://ui-avatars.com/api/?name=Phuwadit+Cham&background=0ea5e9&color=fff&size=200&font-size=0.4"
 st.sidebar.markdown(f'<img src="{profile_image}" class="dev-avatar" alt="Profile">', unsafe_allow_html=True)
 st.sidebar.markdown('<div class="dev-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>', unsafe_allow_html=True)
 st.sidebar.markdown('''
     <div class="dev-info">
-        <p>👤 <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
+        <p> <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
         <p>🆔 <strong>รหัสนักศึกษา:</strong> 664245031</p>
-        <p>🏫 <strong>หมู่เรียน:</strong> 66/44</p>
+        <p> <strong>หมู่เรียน:</strong> 66/44</p>
     </div>
 ''', unsafe_allow_html=True)
 st.sidebar.markdown('</div>', unsafe_allow_html=True)
@@ -187,20 +181,20 @@ st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "🧭 เมนูหลัก",
-    ["🏠 หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", "🎮 ทายผลความเสี่ยง"],
+    [" หน้าหลัก", "📊 วิเคราะห์ข้อมูล", "🤖 ประสิทธิภาพโมเดล", " ทายผลความเสี่ยง"],
     label_visibility="collapsed"
 )
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("<div style='text-align: center; color: #64748b; font-size: 0.8rem;'>📅 ปีการศึกษา 2026<br>🏥 Machine Learning Project</div>", unsafe_allow_html=True)
 
-# ==================== หน้าหลัก ====================
+# หน้าหลัก
 if page == "🏠 หน้าหลัก":
     st.markdown('<div class="main-header">🩺 ระบบพยากรณ์โรคเบาหวานด้วย AI</div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown('<div class="metric-card"><h3>📦 ข้อมูล</h3><h2>100,000+</h2><p>แถวข้อมูลทางการแพทย์</p></div>', unsafe_allow_html=True)
+        st.markdown('<div class="metric-card"><h3> ข้อมูล</h3><h2>100,000+</h2><p>แถวข้อมูลทางการแพทย์</p></div>', unsafe_allow_html=True)
     with col2:
         st.markdown('<div class="metric-card"><h3>🧠 โมเดล</h3><h2>Random Forest</h2><p>Ensemble Learning</p></div>', unsafe_allow_html=True)
     with col3:
@@ -213,7 +207,7 @@ if page == "🏠 หน้าหลัก":
     🌐 **สร้าง Web Application** ที่ใช้งานง่ายและสวยงาม
     """)
 
-# ==================== หน้าวิเคราะห์ข้อมูล ====================
+# หน้าวิเคราะห์ข้อมูล
 elif page == "📊 วิเคราะห์ข้อมูล":
     st.markdown('<div class="main-header">📊 Exploratory Data Analysis</div>', unsafe_allow_html=True)
     
@@ -236,12 +230,11 @@ elif page == "📊 วิเคราะห์ข้อมูล":
     st.markdown('<div class="sub-header">🔥 Correlation Heatmap</div>', unsafe_allow_html=True)
     fig, ax = plt.subplots(figsize=(10, 8))
     numeric_df = df_raw.select_dtypes(include=[np.number])
-    # ✅ แก้ไข: เปลี่ยน cmap='teal' เป็น cmap='coolwarm'
     sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
     ax.set_title('Correlation Heatmap', fontweight='bold', pad=15)
     st.pyplot(fig)
 
-# ==================== หน้าประสิทธิภาพโมเดล ====================
+# หน้าประสิทธิภาพโมเดล
 elif page == "🤖 ประสิทธิภาพโมเดล":
     st.markdown('<div class="main-header">🤖 Model Performance</div>', unsafe_allow_html=True)
     
@@ -254,12 +247,11 @@ elif page == "🤖 ประสิทธิภาพโมเดล":
     st.markdown('<div class="sub-header">🎯 Confusion Matrix</div>', unsafe_allow_html=True)
     fig, ax = plt.subplots(figsize=(8, 6))
     cm = confusion_matrix(metrics['y_test'], metrics['y_pred'])
-    # ✅ แก้ไข: เปลี่ยน cmap='teal' เป็น cmap='Blues'
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax)
     ax.set_title('Confusion Matrix', fontweight='bold', fontsize=14)
     st.pyplot(fig)
 
-# ==================== หน้าทำนายผล ====================
+# หน้าทำนายผล
 elif page == "🎮 ทายผลความเสี่ยง":
     st.markdown('<div class="main-header">🎮 ตรวจสอบความเสี่ยง</div>', unsafe_allow_html=True)
     
@@ -294,7 +286,7 @@ elif page == "🎮 ทายผลความเสี่ยง":
         if prediction == 1:
             st.markdown(f'''
                 <div class="result-card-high">
-                    <h2 style="color: #b91c1c; margin: 0;">⚠️ มีความเสี่ยง</h2>
+                    <h2 style="color: #b91c1c; margin: 0;">️ มีความเสี่ยง</h2>
                     <p style="font-size: 1.2rem; margin: 0.5rem 0;">
                         โอกาสเป็นโรคเบาหวาน: <strong>{risk:.1f}%</strong>
                     </p>
