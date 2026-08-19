@@ -11,212 +11,66 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ตั้งค่าหน้าเว็บ
-st.set_page_config(
-    page_title="Diabetes Prediction System",
-    page_icon="🏥",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Diabetes Prediction System", page_icon="🏥", layout="wide", initial_sidebar_state="collapsed")
 
-# Custom CSS - Clean Medical Dashboard Style
+# Custom CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
-    
-    * {
-        font-family: 'Prompt', sans-serif !important;
-    }
-    
-    /* ซ่อนเมนู Streamlit */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    
-    /* พื้นหลัง */
-    .main {
-        background: #f8fafc;
-    }
-    
-    /* Header */
+    * { font-family: 'Prompt', sans-serif !important; }
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+    .main { background: #f8fafc; }
     .app-header {
         background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
-        padding: 2rem;
-        border-radius: 0 0 30px 30px;
+        padding: 2rem; border-radius: 0 0 30px 30px;
         box-shadow: 0 10px 40px rgba(13, 148, 136, 0.2);
-        margin-bottom: 2rem;
-        text-align: center;
+        margin-bottom: 2rem; text-align: center;
     }
-    
-    .app-header h1 {
-        color: white;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .app-header p {
-        color: rgba(255,255,255,0.9);
-        font-size: 1.1rem;
-        margin-top: 0.5rem;
-    }
-    
-    /* Tab Navigation */
-    .tab-container {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        background: white;
-        padding: 0.5rem;
-        border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    
-    .tab-button {
-        flex: 1;
-        padding: 1rem 2rem;
-        background: transparent;
-        border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        color: #64748b;
-    }
-    
-    .tab-button.active {
-        background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
-    }
-    
-    /* Cards */
+    .app-header h1 { color: white; font-size: 2.5rem; font-weight: 700; margin: 0; }
+    .app-header p { color: rgba(255,255,255,0.9); font-size: 1.1rem; margin-top: 0.5rem; }
     .info-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
+        background: white; padding: 2rem; border-radius: 20px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        margin-bottom: 1.5rem;
-        border-left: 5px solid #14b8a6;
-        transition: transform 0.3s ease;
+        margin-bottom: 1.5rem; border-left: 5px solid #14b8a6;
     }
-    
-    .info-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-    }
-    
     .stat-card {
         background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        text-align: center;
-        border: 2px solid #99f6e4;
+        padding: 1.5rem; border-radius: 15px;
+        text-align: center; border: 2px solid #99f6e4;
     }
-    
-    .stat-card h3 {
-        color: #0f766e;
-        font-size: 2rem;
-        margin: 0;
-        font-weight: 700;
-    }
-    
-    .stat-card p {
-        color: #14b8a6;
-        margin: 0.5rem 0 0 0;
-        font-size: 0.9rem;
-        font-weight: 600;
-    }
-    
-    /* Profile Card */
+    .stat-card h3 { color: #0f766e; font-size: 2rem; margin: 0; font-weight: 700; }
+    .stat-card p { color: #14b8a6; margin: 0.5rem 0 0 0; font-size: 0.9rem; font-weight: 600; }
     .profile-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
+        background: white; padding: 2rem; border-radius: 20px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        text-align: center;
-        margin-bottom: 2rem;
+        text-align: center; margin-bottom: 2rem;
     }
-    
     .profile-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 5px solid #14b8a6;
-        margin-bottom: 1rem;
+        width: 120px; height: 120px; border-radius: 50%;
+        border: 5px solid #14b8a6; margin-bottom: 1rem;
         box-shadow: 0 4px 15px rgba(20, 184, 166, 0.3);
     }
-    
-    .profile-name {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin-bottom: 0.5rem;
-    }
-    
-    .profile-info {
-        background: #f0fdfa;
-        padding: 1rem;
-        border-radius: 10px;
-        margin-top: 1rem;
-    }
-    
-    /* Input Styling */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input {
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.8rem;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stNumberInput > div > div > input:focus {
-        border-color: #14b8a6;
-        box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
-    }
-    
-    /* Button */
+    .profile-name { font-size: 1.3rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+    .profile-info { background: #f0fdfa; padding: 1rem; border-radius: 10px; margin-top: 1rem; }
     .stButton > button {
         background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
-        color: white !important;
-        font-weight: 700;
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        border: none;
+        color: white !important; font-weight: 700; padding: 1rem 2rem;
+        border-radius: 12px; border: none;
         box-shadow: 0 4px 15px rgba(13, 148, 136, 0.3);
-        transition: all 0.3s ease;
     }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(13, 148, 136, 0.4);
-    }
-    
-    /* Result Cards */
     .result-success {
         background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 2px solid #10b981;
-        padding: 2rem;
-        border-radius: 15px;
-        color: #065f46;
+        border: 2px solid #10b981; padding: 2rem;
+        border-radius: 15px; color: #065f46;
     }
-    
     .result-warning {
         background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-        border: 2px solid #ef4444;
-        padding: 2rem;
-        border-radius: 15px;
-        color: #991b1b;
+        border: 2px solid #ef4444; padding: 2rem;
+        border-radius: 15px; color: #991b1b;
     }
-    
-    /* Section Title */
     .section-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 2rem 0 1rem 0;
-        padding-bottom: 0.5rem;
+        font-size: 1.5rem; font-weight: 700; color: #0f172a;
+        margin: 2rem 0 1rem 0; padding-bottom: 0.5rem;
         border-bottom: 3px solid #14b8a6;
     }
 </style>
@@ -270,18 +124,16 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Tab Navigation
-tabs = ["📊 ภาพรวม", " วิเคราะห์ข้อมูล", "🤖 โมเดล", "🎯 ทำนายผล"]
-selected_tab = st.radio("เลือกเมนู", tabs, horizontal=True, label_visibility="collapsed")
+# Navigation
+page = st.radio("เลือกเมนู", [" ภาพรวม", "📈 วิเคราะห์ข้อมูล", "🤖 โมเดล", " ทำนายผล"], horizontal=True, label_visibility="collapsed")
 
 # โหลดข้อมูลและโมเดล
-with st.spinner(" กำลังโหลดระบบ..."):
+with st.spinner("⏳ กำลังโหลดระบบ..."):
     metrics = build_model()
     df_raw = load_data()
 
 # ==================== TAB 1: ภาพรวม ====================
-if selected_tab == "📊 ภาพรวม":
-    # Profile Section
+if page == "📊 ภาพรวม":
     col1, col2 = st.columns([1, 3])
     with col1:
         st.markdown("""
@@ -301,7 +153,7 @@ if selected_tab == "📊 ภาพรวม":
         st.markdown('<div class="section-title">เกี่ยวกับโปรเจกต์</div>', unsafe_allow_html=True)
         st.markdown("""
         <div class="info-card">
-            <h3>🎯 วัตถุประสงค์</h3>
+            <h3> วัตถุประสงค์</h3>
             <ul>
                 <li>พัฒนาโมเดล Machine Learning สำหรับพยากรณ์โรคเบาหวาน</li>
                 <li>วิเคราะห์ปัจจัยเสี่ยงที่สำคัญต่อการเกิดโรค</li>
@@ -322,7 +174,7 @@ if selected_tab == "📊 ภาพรวม":
             st.markdown(f'<div class="stat-card"><h3>8</h3><p>Features</p></div>', unsafe_allow_html=True)
 
 # ==================== TAB 2: วิเคราะห์ข้อมูล ====================
-elif selected_tab == "📈 วิเคราะห์ข้อมูล":
+elif page == "📈 วิเคราะห์ข้อมูล":
     st.markdown('<div class="section-title">การวิเคราะห์ข้อมูลเชิงสำรวจ</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -342,7 +194,7 @@ elif selected_tab == "📈 วิเคราะห์ข้อมูล":
         ax.set_title('การกระจายตัวของอายุ', fontweight='bold')
         st.pyplot(fig)
     
-    st.markdown('<div class="info-card"><h3>🔥 Correlation Matrix</h3></div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-card"><h3> Correlation Matrix</h3></div>', unsafe_allow_html=True)
     fig, ax = plt.subplots(figsize=(10, 8))
     numeric_df = df_raw.select_dtypes(include=[np.number])
     sns.heatmap(numeric_df.corr(), annot=True, cmap='teal', fmt='.2f', ax=ax)
@@ -350,7 +202,7 @@ elif selected_tab == "📈 วิเคราะห์ข้อมูล":
     st.pyplot(fig)
 
 # ==================== TAB 3: โมเดล ====================
-elif selected_tab == " โมเดล":
+elif page == "🤖 โมเดล":
     st.markdown('<div class="section-title">Random Forest Classifier</div>', unsafe_allow_html=True)
     
     st.markdown("""
@@ -395,7 +247,7 @@ elif selected_tab == " โมเดล":
         st.pyplot(fig)
 
 # ==================== TAB 4: ทำนายผล ====================
-elif selected_tab == " ทำนายผล":
+elif page == "🎯 ทำนายผล":
     st.markdown('<div class="section-title">แบบฟอร์มประเมินความเสี่ยง</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -414,7 +266,7 @@ elif selected_tab == " ทำนายผล":
         hba1c = st.number_input("HbA1c (%)", 3.0, 15.0, 5.7, 0.1)
         glucose = st.number_input("น้ำตาลในเลือด (mg/dL)", 50, 400, 100)
     
-    if st.button(" ประเมินความเสี่ยง", use_container_width=True):
+    if st.button("🔮 ประเมินความเสี่ยง", use_container_width=True):
         gender_enc = metrics['le_gender'].transform([gender])[0]
         smoking_enc = metrics['le_smoking'].transform([smoking])[0]
         
