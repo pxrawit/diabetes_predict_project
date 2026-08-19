@@ -450,19 +450,23 @@ with tabs[3]:
         
         st.progress(float(risk / 100))
 
+import base64
+
 # ==================== TAB 5: ผู้พัฒนา ====================
 with tabs[4]:
     st.markdown('<div class="main-header">👨‍💻 เกี่ยวกับผู้พัฒนา</div>', unsafe_allow_html=True)
     
-    # แสดงรูปจากโฟลเดอร์โดยตรง
-    st.image("profile.jpg", width=200)
+    # อ่านรูปจากโฟลเดอร์และแปลงเป็น Base64
+    with open("profile.jpg", "rb") as f:
+        img_data = base64.b64encode(f.read()).decode()
     
-    st.markdown('''
+    st.markdown(f'''
         <div class="developer-card">
+            <img src="data:image/jpeg;base64,{img_data}" class="dev-avatar" alt="Profile">
             <div class="dev-name">นาย ภูวฤทธิ์ แช่มมั่นคง</div>
             <div class="dev-info">
                 <p>👤 <strong>ชื่อ-สกุล:</strong> นาย ภูวฤทธิ์ แช่มมั่นคง</p>
-                <p>🆔 <strong>รหัสนักศึกษา:</strong> 664245031</p>
+                <p> <strong>รหัสนักศึกษา:</strong> 664245031</p>
                 <p>🏫 <strong>หมู่เรียน:</strong> 66/44</p>
                 <p>📅 <strong>ปีการศึกษา:</strong> 2026</p>
                 <p>💻 <strong>โปรเจกต์:</strong> Machine Learning Project</p>
