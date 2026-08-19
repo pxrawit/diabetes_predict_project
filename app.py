@@ -15,10 +15,8 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-# ตั้งค่าหน้าเว็บ
 st.set_page_config(page_title="Diabetes Prediction AI", page_icon="🩺", layout="wide", initial_sidebar_state="collapsed")
 
-# โหลด CSS จากไฟล์แยก
 def load_css():
     if os.path.exists("style.css"):
         with open("style.css", "r", encoding="utf-8") as f:
@@ -28,17 +26,14 @@ def load_css():
 
 load_css()
 
-# โหลดข้อมูล
 @st.cache_data
 def load_data():
     return pd.read_csv('diabetes_prediction_dataset.csv')
 
-# สร้างและเปรียบเทียบโมเดล
 @st.cache_resource
 def build_and_compare_models():
     df = load_data()
     
-    # Preprocessing
     le_gender = LabelEncoder()
     le_smoking = LabelEncoder()
     df['gender'] = le_gender.fit_transform(df['gender'])
@@ -53,7 +48,6 @@ def build_and_compare_models():
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     
-    # สร้างโมเดลต่างๆ
     models = {
         'Random Forest': RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42, n_jobs=-1),
         'Decision Tree': DecisionTreeClassifier(max_depth=10, random_state=42),
@@ -89,12 +83,10 @@ def build_and_compare_models():
         'df': df
     }
 
-# โหลดข้อมูลและโมเดล
 with st.spinner("🔄 กำลังเตรียมระบบ..."):
     metrics = build_and_compare_models()
     df_raw = load_data()
 
-# Tabs Navigation (6 Tabs)
 tabs = st.tabs([
     "🏠 หน้าหลัก",
     "🧹 การเตรียมข้อมูล",
@@ -104,15 +96,12 @@ tabs = st.tabs([
     "👨‍💻 ผู้พัฒนา"
 ])
 
-# ==================== TAB 1: หน้าหลัก ====================
 with tabs[0]:
     st.markdown('<div class="main-header">🩺 ระบบพยากรณ์โรคเบาหวานด้วย AI</div>', unsafe_allow_html=True)
-    
     col1, col2, col3 = st.columns(3)
     with col1: st.markdown('<div class="metric-card"><h3>📦 ข้อมูล</h3><h2>90,000+</h2><p>แถวข้อมูลทางการแพทย์</p></div>', unsafe_allow_html=True)
     with col2: st.markdown('<div class="metric-card"><h3>🧠 โมเดล</h3><h2>Random Forest</h2><p>Ensemble Learning</p></div>', unsafe_allow_html=True)
     with col3: st.markdown('<div class="metric-card"><h3>🎯 ความแม่นยำ</h3><h2>95%+</h2><p>Accuracy Score</p></div>', unsafe_allow_html=True)
-
     st.markdown('''
     <div class="metric-card" style="margin-top: 2rem; text-align: left;">
         <h3 style="color: #667eea; font-size: 1.2rem; margin-bottom: 1rem;">🎯 วัตถุประสงค์</h3>
@@ -124,10 +113,8 @@ with tabs[0]:
     </div>
     ''', unsafe_allow_html=True)
 
-# ==================== TAB 2: การเตรียมข้อมูล ====================
 with tabs[1]:
     st.markdown('<div class="main-header">🧹 การเตรียมข้อมูล (Data Preprocessing)</div>', unsafe_allow_html=True)
-    
     st.markdown('<div class="info-box"><h3 style="color: #667eea; margin-top: 0;">📋 ขั้นตอนการเตรียมข้อมูล 4 ขั้นตอน</h3><p>การเตรียมข้อมูลเป็นขั้นตอนสำคัญที่ช่วยให้โมเดล Machine Learning ทำงานได้มีประสิทธิภาพมากขึ้น</p></div>', unsafe_allow_html=True)
     
     st.markdown('<div class="metric-card" style="margin-bottom: 1.5rem;"><h3 style="text-align: left;">1️⃣ ตรวจสอบและจัดการ Missing Values</h3><p style="text-align: left; margin-top: 1rem;">ตรวจสอบค่าว่างใน Dataset และจัดการด้วยการลบหรือเติมค่าที่เหมาะสม</p></div>', unsafe_allow_html=True)
@@ -167,10 +154,8 @@ with tabs[1]:
     st.markdown("---")
     st.markdown('<div class="metric-card" style="margin-bottom: 1.5rem;"><h3 style="text-align: left;">4️⃣ Train-Test Split</h3><p style="text-align: left; margin-top: 1rem;">แบ่งข้อมูลเป็นชุดฝึก (Training Set) 80% และชุดทดสอบ (Test Set) 20% โดยใช้ Stratified Sampling</p></div>', unsafe_allow_html=True)
 
-# ==================== TAB 3: วิเคราะห์ข้อมูล ====================
 with tabs[2]:
     st.markdown('<div class="main-header">📊 Exploratory Data Analysis</div>', unsafe_allow_html=True)
-    
     col1, col2 = st.columns(2)
     with col1:
         fig, ax = plt.subplots(figsize=(6, 6))
@@ -187,7 +172,7 @@ with tabs[2]:
         ax.tick_params(colors='white')
         ax.xaxis.label.set_color('white')
         ax.yaxis.label.set_color('white')
-        # ✅ แก้ไขจุดที่ทำให้เกิด Error: ใช้ Tuple แทน string 'rgba(...)'
+        # ✅ แก้ไขจุดที่ทำให้เกิด Error: ใช้ Tuple (1, 1, 1, 0.1) แทน String 'rgba(...)'
         ax.legend(labels=['Non-Diabetic', 'Diabetic'], facecolor=(1, 1, 1, 0.1), edgecolor='none', labelcolor='white')
         fig.patch.set_alpha(0.0)
         st.pyplot(fig)
@@ -203,10 +188,8 @@ with tabs[2]:
     plt.yticks(color='#94a3b8')
     st.pyplot(fig)
 
-# ==================== TAB 4: ประสิทธิภาพโมเดล ====================
 with tabs[3]:
     st.markdown('<div class="main-header">🤖 ประสิทธิภาพโมเดลและการเปรียบเทียบ</div>', unsafe_allow_html=True)
-    
     st.markdown('''
     <div class="metric-card" style="margin-bottom: 2rem; text-align: left;">
         <h3 style="color: #667eea; font-size: 1.3rem;">📚 ทฤษฎี Random Forest</h3>
@@ -230,7 +213,6 @@ with tabs[3]:
     display_df['Precision'] = display_df['Precision'].apply(lambda x: f'{x:.2%}')
     display_df['Recall'] = display_df['Recall'].apply(lambda x: f'{x:.2%}')
     display_df['F1-Score'] = display_df['F1-Score'].apply(lambda x: f'{x:.4f}')
-    
     st.dataframe(display_df.style.background_gradient(cmap='Blues', subset=['Accuracy', 'Precision', 'Recall', 'F1-Score']), use_container_width=True, hide_index=True)
     
     st.markdown('<div class="main-header" style="font-size: 1.8rem;">📈 กราฟเปรียบเทียบประสิทธิภาพ</div>', unsafe_allow_html=True)
@@ -312,10 +294,8 @@ with tabs[3]:
         for i in range(3):
             st.info(f"**{i+1}. {importance.iloc[i]['Feature']}**\n\nScore: {importance.iloc[i]['Importance']:.4f}")
 
-# ==================== TAB 5: ทายผลความเสี่ยง ====================
 with tabs[4]:
     st.markdown('<div class="main-header">🎮 ตรวจสอบความเสี่ยง</div>', unsafe_allow_html=True)
-    
     col1, col2 = st.columns(2)
     with col1:
         st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#667eea;">👤 ข้อมูลส่วนบุคคล</h3></div>', unsafe_allow_html=True)
@@ -323,7 +303,6 @@ with tabs[4]:
         age = st.slider("อายุ (ปี)", 0, 100, 30)
         hypertension = st.radio("ความดันโลหิตสูง", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
         heart_disease = st.radio("โรคหัวใจ", [0, 1], format_func=lambda x: "ไม่มี" if x == 0 else "มี")
-    
     with col2:
         st.markdown('<div class="metric-card" style="text-align:left; margin-bottom:1rem;"><h3 style="margin-top:0; color:#667eea;">🩸 ข้อมูลทางการแพทย์</h3></div>', unsafe_allow_html=True)
         smoking = st.selectbox("สูบบุหรี่", ["No Info", "never", "former", "current", "ever", "not current"])
@@ -334,10 +313,8 @@ with tabs[4]:
     if st.button("🔮 ทำนายผล"):
         gender_enc = metrics['le_gender'].transform([gender])[0]
         smoking_enc = metrics['le_smoking'].transform([smoking])[0]
-        
         input_data = np.array([[gender_enc, age, hypertension, heart_disease, smoking_enc, bmi, hba1c, glucose]])
         input_scaled = metrics['scaler'].transform(input_data)
-        
         rf_model = metrics['results_df'][metrics['results_df']['Model'] == 'Random Forest']['model'].values[0]
         prediction = rf_model.predict(input_scaled)[0]
         proba = rf_model.predict_proba(input_scaled)[0]
@@ -350,10 +327,8 @@ with tabs[4]:
             st.markdown(f'<div class="result-card-low"><h2 style="color: #6ee7b7; margin: 0;">✅ ความเสี่ยงต่ำ</h2><p style="font-size: 1.4rem; margin: 1rem 0; font-weight: 600; color: #ffffff;">โอกาสเป็นโรคเบาหวาน: <strong>{risk:.1f}%</strong></p><p style="font-size: 1rem; color: #6ee7b7;">💡 สุขภาพดี! ตรวจสุขภาพเป็นประจำ</p></div>', unsafe_allow_html=True)
         st.progress(float(risk / 100))
 
-# ==================== TAB 6: ผู้พัฒนา ====================
 with tabs[5]:
     st.markdown('<div class="main-header">👨‍💻 เกี่ยวกับผู้พัฒนา</div>', unsafe_allow_html=True)
-    
     img_html = ""
     if os.path.exists("profile.jpg"):
         with open("profile.jpg", "rb") as f:
