@@ -454,7 +454,7 @@ with tabs[3]:
 with tabs[4]:
     st.markdown('<div class="main-header">👨‍💻 เกี่ยวกับผู้พัฒนา</div>', unsafe_allow_html=True)
     
-    profile_image = "/profile.jpg"
+    profile_image = "profile.jpg"
     
     st.markdown(f'''
         <div class="developer-card">
